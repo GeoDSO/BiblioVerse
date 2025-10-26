@@ -33,5 +33,6 @@ public class BibliotecaService {
     public List<Biblioteca> listarBibliotecas() {
         return bibliotecaRepository.findAll();
     }
+
 }
 

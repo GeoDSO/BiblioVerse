@@ -1,4 +1,5 @@
 package com.biblioverse.biblioverse.Entidades;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +29,7 @@ public class Usuario {
     private Rol rol; // ADMIN, NORMAL, NO_REGISTRADO
 
     @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Libro> libros = new HashSet<>();
 
     @ManyToMany(mappedBy = "usuarios")

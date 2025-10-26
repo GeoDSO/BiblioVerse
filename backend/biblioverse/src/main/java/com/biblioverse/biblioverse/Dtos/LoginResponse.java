@@ -10,4 +10,17 @@ public class LoginResponse {
         this.message = message;
         this.usuario = usuario;
     }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
 }
+

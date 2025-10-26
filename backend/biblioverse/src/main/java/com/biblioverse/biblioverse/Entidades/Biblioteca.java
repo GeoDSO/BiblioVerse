@@ -1,5 +1,6 @@
 package com.biblioverse.biblioverse.Entidades;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +30,7 @@ public class Biblioteca {
     private Set<Usuario> usuarios = new HashSet<>();
 
     @OneToMany(mappedBy = "biblioteca", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Libro> libros = new HashSet<>();
 
 }
