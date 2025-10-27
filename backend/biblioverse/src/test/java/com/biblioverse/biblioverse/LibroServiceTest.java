@@ -43,9 +43,11 @@ class LibroServiceTest {
     void setUp() {
         usuario = new Usuario();
         usuario.setId(1L);
+        usuario.setUsername("geo");
 
         biblioteca = new Biblioteca();
         biblioteca.setId(1L);
+        biblioteca.setNombre("Mi Biblioteca");
     }
 
     // ----------------- Test subirLibro -----------------
@@ -54,7 +56,7 @@ class LibroServiceTest {
         Libro libro = new Libro();
         libro.setTitulo("Mi Libro");
         libro.setAutor("Geo");
-        libro.setCreador(usuario);
+        libro.setAgregador(usuario);
         libro.setBiblioteca(biblioteca);
 
         Mockito.when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
@@ -66,7 +68,7 @@ class LibroServiceTest {
         assertNotNull(resultado);
         assertEquals("Mi Libro", resultado.getTitulo());
         assertEquals("Geo", resultado.getAutor());
-        assertEquals(usuario, resultado.getCreador());
+        assertEquals(usuario, resultado.getAgregador());
         assertEquals(biblioteca, resultado.getBiblioteca());
     }
 
@@ -82,5 +84,37 @@ class LibroServiceTest {
         List<Libro> resultado = libroService.listarLibros();
 
         assertEquals(2, resultado.size());
+    }
+
+    // ----------------- Test buscarLibros -----------------
+    @Test
+    void buscarLibros_porTitulo() {
+        List<Libro> libros = List.of(new Libro(), new Libro());
+        Mockito.when(libroRepository.findByTituloContainingIgnoreCase("Harry")).thenReturn(libros);
+
+        List<Libro> resultado = libroService.buscarLibros("Harry", null);
+
+        assertEquals(2, resultado.size());
+    }
+
+    @Test
+    void buscarLibros_porAgregador() {
+        List<Libro> libros = List.of(new Libro());
+        Mockito.when(libroRepository.findByAgregadorUsernameContaining("geo")).thenReturn(libros);
+
+        List<Libro> resultado = libroService.buscarLibros(null, "geo");
+
+        assertEquals(1, resultado.size());
+    }
+
+    @Test
+    void buscarLibros_porTituloYAgregador() {
+        List<Libro> libros = List.of(new Libro());
+        Mockito.when(libroRepository.findByTituloContainingIgnoreCaseAndAgregadorUsernameContaining("Harry", "geo"))
+                .thenReturn(libros);
+
+        List<Libro> resultado = libroService.buscarLibros("Harry", "geo");
+
+        assertEquals(1, resultado.size());
     }
 }

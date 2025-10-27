@@ -17,11 +17,20 @@ public class BibliotecaController {
 
     @PostMapping("/crear")
     public Biblioteca crearBiblioteca(@RequestBody BibliotecaDto bibliotecaDTO) {
+        // Crea la biblioteca y automáticamente asigna al usuario como creador
         return bibliotecaService.crearBiblioteca(
                 bibliotecaDTO.getNombre(),
                 bibliotecaDTO.getEsPublica(),
                 bibliotecaDTO.getIdUsuario()
         );
+    }
+
+    @GetMapping("/buscar")
+    public List<Biblioteca> buscarBibliotecas(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String username) {
+        // Busca bibliotecas por nombre y/o por creador
+        return bibliotecaService.buscarBibliotecas(nombre, username);
     }
 
     @GetMapping("/listar")

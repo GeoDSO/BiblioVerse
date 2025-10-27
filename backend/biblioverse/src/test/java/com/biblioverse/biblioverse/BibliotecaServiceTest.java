@@ -1,5 +1,6 @@
 package com.biblioverse.biblioverse;
 
+
 import com.biblioverse.biblioverse.Entidades.Biblioteca;
 import com.biblioverse.biblioverse.Entidades.Usuario;
 import com.biblioverse.biblioverse.Repositorios.BibliotecaRepository;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @ExtendWith(MockitoExtension.class)
 class BibliotecaServiceTest {
 
@@ -37,6 +39,7 @@ class BibliotecaServiceTest {
     void setUp() {
         usuario = new Usuario();
         usuario.setId(1L);
+        usuario.setUsername("geo");
     }
 
     // ----------------- Test crearBiblioteca -----------------
@@ -45,6 +48,7 @@ class BibliotecaServiceTest {
         Biblioteca biblioteca = new Biblioteca();
         biblioteca.setNombre("Mi Biblioteca");
         biblioteca.setEsPublica(true);
+        biblioteca.setCreador(usuario);
         biblioteca.getUsuarios().add(usuario);
 
         Mockito.when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
@@ -55,6 +59,7 @@ class BibliotecaServiceTest {
         assertNotNull(resultado);
         assertEquals("Mi Biblioteca", resultado.getNombre());
         assertTrue(resultado.isEsPublica());
+        assertEquals(usuario, resultado.getCreador());
         assertTrue(resultado.getUsuarios().contains(usuario));
     }
 
@@ -70,5 +75,37 @@ class BibliotecaServiceTest {
         List<Biblioteca> resultado = bibliotecaService.listarBibliotecas();
 
         assertEquals(2, resultado.size());
+    }
+
+    // ----------------- Test buscarBibliotecas -----------------
+    @Test
+    void buscarBibliotecas_porNombre() {
+        List<Biblioteca> bibliotecas = List.of(new Biblioteca(), new Biblioteca());
+        Mockito.when(bibliotecaRepository.findByNombreContainingIgnoreCase("Harry")).thenReturn(bibliotecas);
+
+        List<Biblioteca> resultado = bibliotecaService.buscarBibliotecas("Harry", null);
+
+        assertEquals(2, resultado.size());
+    }
+
+    @Test
+    void buscarBibliotecas_porCreador() {
+        List<Biblioteca> bibliotecas = List.of(new Biblioteca());
+        Mockito.when(bibliotecaRepository.findByCreadorUsernameContaining("geo")).thenReturn(bibliotecas);
+
+        List<Biblioteca> resultado = bibliotecaService.buscarBibliotecas(null, "geo");
+
+        assertEquals(1, resultado.size());
+    }
+
+    @Test
+    void buscarBibliotecas_porNombreYCreador() {
+        List<Biblioteca> bibliotecas = List.of(new Biblioteca());
+        Mockito.when(bibliotecaRepository.findByNombreContainingIgnoreCaseAndCreadorUsernameContaining("Harry", "geo"))
+                .thenReturn(bibliotecas);
+
+        List<Biblioteca> resultado = bibliotecaService.buscarBibliotecas("Harry", "geo");
+
+        assertEquals(1, resultado.size());
     }
 }

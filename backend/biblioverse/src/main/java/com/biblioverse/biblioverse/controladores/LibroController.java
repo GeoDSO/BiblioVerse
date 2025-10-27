@@ -25,6 +25,13 @@ public class LibroController {
         );
     }
 
+    @GetMapping("/buscar")
+    public List<Libro> buscarLibros(
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) String autor) {
+        return libroService.buscarLibros(titulo, autor);
+    }
+
     @GetMapping("/listar")
     public List<Libro> listarLibros() {
         return libroService.listarLibros();

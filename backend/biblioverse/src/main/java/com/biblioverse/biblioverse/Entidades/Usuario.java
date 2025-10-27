@@ -1,38 +1,41 @@
 package com.biblioverse.biblioverse.Entidades;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)  // ← CAMBIADO
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     private String username;
+
     @Column(unique = true, nullable = false)
     private String email;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Rol rol; // ADMIN, NORMAL, NO_REGISTRADO
+    private Rol rol;
 
     @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Set<Libro> libros = new HashSet<>();
+    @JsonIgnore
+    private Set<Biblioteca> bibliotecasCreadas = new HashSet<>();
 
-    @ManyToMany(mappedBy = "usuarios")
-    private Set<Biblioteca> bibliotecas = new HashSet<>();
-
+    @OneToMany(mappedBy = "agregador", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Libro> librosAgregados = new HashSet<>();
 }

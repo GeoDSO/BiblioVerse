@@ -22,6 +22,6 @@ public class BibliotecaDto {
     @NotNull(message = "Debe especificar si la biblioteca es pública o no")
     private Boolean esPublica;
 
-    @NotNull(message = "Debe indicar el ID del usuario creador")
+    @NotNull(message = "Debe indicar el ID del usuario que la añadió")
     private Long idUsuario;
 }
