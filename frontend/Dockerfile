@@ -1,15 +1,20 @@
-# Etapa de build
-FROM node:20 AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+# Imagen base con Node
+FROM node:20
 
-# Etapa de producción con Nginx
-FROM nginx:alpine
-WORKDIR /usr/share/nginx/html
-RUN rm -rf ./*
-COPY --from=build /app/build .
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiamos dependencias
+COPY package*.json ./
+
+# Instalamos dependencias
+RUN npm install
+
+# Copiamos el resto del código
+COPY . .
+
+# Exponemos el puerto del servidor de desarrollo
+EXPOSE 3000
+
+# Comando para iniciar React
+CMD ["npm", "start"]
