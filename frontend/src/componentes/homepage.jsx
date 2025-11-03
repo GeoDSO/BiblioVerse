@@ -3,10 +3,9 @@ import LectorLibro from "./lectorlibro.jsx";
 import "./homepage.css";
 
 function HomePage() {
-  // 👉 Estado para saber qué libro se está leyendo
   const [libroSeleccionado, setLibroSeleccionado] = useState(null);
 
-  // 👉 Lista de libros recomendados
+  // Lista de libros recomendados
   const librosRecomendados = [
     {
       titulo: "Orgullo y Prejuicio",
@@ -65,7 +64,7 @@ function HomePage() {
         ))}
       </div>
 
-      {/* 📖 Modal lector de libros */}
+      {/* Modal lector de libros */}
       {libroSeleccionado && (
         <LectorLibro
           url={libroSeleccionado.archivo}
