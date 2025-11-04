@@ -1,11 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import LectorLibro from "./lectorlibro.jsx";
 import "./homepage.css";
 
 function HomePage() {
   const [libroSeleccionado, setLibroSeleccionado] = useState(null);
+  const principitoRef = useRef(null);
 
-  // Lista de libros recomendados
+useEffect(() => { 
+  if (principitoRef.current) {
+    gsap.to(principitoRef.current, {
+      y: -35,
+      rotation: 10,
+      duration: 6, // un pelín más rápido y notorio
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+      transformOrigin: "center center", // suaviza el giro
+    });
+  }
+}, []);
+
   const librosRecomendados = [
     {
       titulo: "Orgullo y Prejuicio",
@@ -45,26 +60,44 @@ function HomePage() {
     },
   ];
 
+  const handleLibroClick = (libro) => {
+    setLibroSeleccionado(libro);
+  };
+
   return (
     <div className="homepage-container">
-      <h1>✨ Libros Recomendados ✨</h1>
+      <header className="header-libros">
+        <img
+          ref={principitoRef}
+          src="/imagenes/elprincipito.png"
+          alt="El Principito"
+          className="principito"
+        />
+        <div className="header-texto">
+          <h1>
+            NUESTROS <span>RECOMENDADOS</span>
+          </h1>
+          <p>Descubre nuestros libros más encantadores del momento</p>
+        </div>
+      </header>
 
-      {/* 📚 Cuadrícula de libros */}
-      <div className="libros-grid">
-        {librosRecomendados.map((libro, index) => (
-          <div
-            key={index}
-            className="libro-card"
-            onClick={() => setLibroSeleccionado(libro)}
-          >
-            <img src={libro.portada} alt={libro.titulo} />
-            <h3>{libro.titulo}</h3>
-            <p>{libro.autor}</p>
-          </div>
-        ))}
+      <div className="estanteria">
+        <div className="libros-grid">
+          {librosRecomendados.map((libro, index) => (
+            <div
+              key={index}
+              className="libro-card"
+              onClick={() => handleLibroClick(libro)}
+            >
+              <img src={libro.portada} alt={libro.titulo} />
+              <h3>{libro.titulo}</h3>
+              <p>{libro.autor}</p>
+            </div>
+          ))}
+        </div>
+        <div className="boton-descubrir">DESCUBRE MÁS</div>
       </div>
 
-      {/* Modal lector de libros */}
       {libroSeleccionado && (
         <LectorLibro
           url={libroSeleccionado.archivo}

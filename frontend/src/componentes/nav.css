@@ -1,36 +1,41 @@
 .navbar {
-  background: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: #ede2d0; /* buttercream */
+  border-bottom: 3px solid #e9d2a9; /* wheat */
+  box-shadow: 0 4px 15px rgba(123, 87, 71, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
+  transition: all 0.3s ease;
+  border-radius: 0 0 25px 25px;
 }
 
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 15px 20px;
+  padding: 18px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .nav-logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #667eea;
+  font-size: 26px;
+  font-weight: 700;
+  color: #7b5747; /* cacao nibs */
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
 }
 
 .nav-logo:hover {
-  transform: scale(1.05);
+  color: #bb6a57; /* apricot brandy */
+  transform: translateY(-2px);
 }
 
 .nav-menu {
   display: flex;
   list-style: none;
-  gap: 30px;
+  gap: 28px;
   align-items: center;
   margin: 0;
   padding: 0;
@@ -38,13 +43,18 @@
 
 .nav-menu li {
   cursor: pointer;
-  color: #333;
+  color: #7b5747;
   font-weight: 500;
-  transition: color 0.3s;
+  font-size: 16px;
+  transition: color 0.3s ease, transform 0.2s ease;
+  border-radius: 12px;
+  padding: 6px 12px;
 }
 
 .nav-menu li:hover {
-  color: #667eea;
+  color: #ede2d0;
+  background-color: #bb6a57;
+  transform: translateY(-2px);
 }
 
 .nav-user {
@@ -54,21 +64,31 @@
 }
 
 .nav-user span {
-  color: #667eea;
+  color: #a57865; /* mocha mousse */
   font-weight: 600;
+  font-size: 15px;
 }
 
 .btn-logout {
-  padding: 8px 16px;
-  background: #ff4757;
-  color: white;
+  padding: 8px 18px;
+  background: linear-gradient(135deg, #bb6a57 0%, #793937 100%);
+  color: #fffaf3;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(185, 106, 87, 0.2);
 }
 
 .btn-logout:hover {
-  background: #ee5a6f;
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #a57865 0%, #7b5747 100%);
+  box-shadow: 0 6px 14px rgba(185, 106, 87, 0.3);
+}
+
+.navbar.scrolled {
+  background: #e9d2a9; /* wheat */
+  box-shadow: 0 6px 20px rgba(123, 87, 71, 0.15);
 }

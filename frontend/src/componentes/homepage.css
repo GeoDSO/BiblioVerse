@@ -1,134 +1,168 @@
 .homepage-container {
-  text-align: center;
-  padding: 2rem;
-  background: #faf9f6;
+  width: 100%;
   min-height: 100vh;
+  background: #f5ede3; /* Fondo cremoso pastel */
+  padding: 2rem;
+  border-radius: 25px;
+  box-shadow: inset 0 0 30px rgba(167, 120, 101, 0.05);
+}
+
+.header-libros {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  max-width: 100%;
+}
+
+.principito {
+  width: 340px;
+  height: 340px;
+  object-fit: contain;
+  flex-shrink: 0;
+  order: 2;
+  filter: drop-shadow(0 12px 24px rgba(187, 106, 87, 0.25));
+  transition: filter 1,2s ease;
+}
+.principito:hover {
+  transform: scale(1.05) rotate(2deg);
+  filter: drop-shadow(0 12px 24px rgba(123, 87, 71, 0.25));
+}
+
+.header-texto {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  order: 1;
+}
+
+.header-texto h1 {
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: #7b5747;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.header-texto span {
+  color: #bb6a57;
+}
+
+.header-texto p {
+  font-size: 1.1rem;
+  color: #a57865;
+  margin: 0;
+}
+
+.estanteria {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
 }
 
 .libros-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1400px;
 }
 
 .libro-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   cursor: pointer;
-  overflow: hidden;
+  transition: all 0.3s ease;
+  padding: 1.2rem;
+  border-radius: 16px;
+  background: #fffdf9;
+  box-shadow: 0 3px 10px rgba(123, 87, 71, 0.1);
 }
 
 .libro-card:hover {
-  transform: scale(1.05);
+  transform: translateY(-8px);
+  box-shadow: 0 8px 22px rgba(187, 106, 87, 0.18);
+  background: #f9f5f1;
 }
 
 .libro-card img {
-  width: 100%;
-  height: 250px;
+  width: 130px;
+  height: 170px;
   object-fit: cover;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.libro-card:hover img {
+  transform: scale(1.05);
 }
 
 .libro-card h3 {
-  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #7b5747;
+  text-align: center;
+  margin: 0;
+  line-height: 1.3;
 }
 
 .libro-card p {
-  color: #555;
-  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #a57865;
+  text-align: center;
+  margin: 0;
 }
 
-/* --- Modal --- */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(40, 40, 50, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  backdrop-filter: blur(4px);
-}
-
-.modal-content {
-  background: #fffaf3;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  position: relative;
-  animation: popup 0.3s ease-out;
-}
-
-.cerrar-modal {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #ff6961;
-  color: white;
+.boton-descubrir {
+  margin-top: 2rem;
+  padding: 14px 36px;
+  background: #bb6a57;
+  color: #f5ede3;
   border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(187, 106, 87, 0.25);
 }
 
-@keyframes popup {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+.boton-descubrir:hover {
+  background: #a57865;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(123, 87, 71, 0.25);
 }
 
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  backdrop-filter: blur(4px);
-}
-
-.modal-content {
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  animation: aparecer 0.3s ease;
-}
-
-@keyframes aparecer {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
+/* Responsive */
+@media (max-width: 768px) {
+  .header-libros {
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
   }
-  to {
-    transform: scale(1);
-    opacity: 1;
+
+  .principito {
+    width: 200px;
+    height: 200px;
+    order: 1;
   }
-}
-.boton-pdf {
-  background: #7b5bf2;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  font-weight: bold;
-}
 
-.boton-pdf:hover {
-  background: #5d43c7;
-}
+  .header-texto {
+    order: 2;
+  }
 
-.boton-pdf:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  .header-texto h1 {
+    font-size: 1.8rem;
+  }
+
+  .libros-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1.5rem;
+  }
 }
