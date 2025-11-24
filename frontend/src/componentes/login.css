@@ -1,0 +1,302 @@
+/* Contenedor principal con transición día/noche */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 1s ease;
+}
+
+/* Modo día (Login) - amanecer dorado */
+.login-wrapper.day {
+  background: linear-gradient(135deg, 
+    #f5ede3 0%, 
+    #ede2d0 25%,
+    #e9d2a9 50%,
+    #f5ede3 75%,
+    #fffdf9 100%);
+  animation: dayGradient 15s ease infinite;
+}
+
+@keyframes dayGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Modo noche (Register) - crepúsculo suave */
+.login-wrapper.night {
+  background: linear-gradient(135deg,
+    #a57865 0%,
+    #bb6a57 25%,
+    #7b5747 50%,
+    #a57865 75%,
+    #bb6a57 100%);
+  background-size: 200% 200%;
+  animation: nightGradient 15s ease infinite;
+}
+
+@keyframes nightGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Partículas flotantes de fondo */
+.login-wrapper::before {
+  content: '✨';
+  position: absolute;
+  font-size: 30px;
+  opacity: 0.1;
+  animation: float 20s ease-in-out infinite;
+  top: 20%;
+  left: 10%;
+}
+
+.login-wrapper::after {
+  content: '🌙';
+  position: absolute;
+  font-size: 40px;
+  opacity: 0.08;
+  animation: float 25s ease-in-out infinite reverse;
+  bottom: 15%;
+  right: 15%;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-30px) rotate(10deg); }
+  50% { transform: translateY(-60px) rotate(-5deg); }
+  75% { transform: translateY(-30px) rotate(8deg); }
+}
+
+/* Card principal con efecto glassmorphism */
+.auth-card {
+  background: rgba(255, 253, 249, 0.85);
+  backdrop-filter: blur(20px);
+  border-radius: 30px;
+  padding: 3rem 2.5rem;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 15px 50px rgba(123, 87, 71, 0.15),
+              0 0 80px rgba(187, 106, 87, 0.08),
+              inset 0 0 30px rgba(255, 255, 255, 0.1);
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(233, 210, 169, 0.3);
+}
+
+/* Brillo mágico en el card */
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  animation: shimmer 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+  50% { transform: translate(0%, 0%) scale(1); opacity: 1; }
+}
+
+.auth-card.night {
+  background: rgba(255, 250, 243, 0.9);
+  box-shadow: 0 15px 50px rgba(123, 87, 71, 0.25),
+              0 0 100px rgba(187, 106, 87, 0.15);
+  border: 2px solid rgba(187, 106, 87, 0.3);
+}
+
+/* Animación de entrada del formulario */
+.fade-container {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.fade-container.hidden {
+  opacity: 0;
+  transform: translateY(30px);
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+}
+
+/* Título con efecto de brillo */
+.fade-container h2 {
+  color: #7b5747;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  text-shadow: 0 2px 20px rgba(187, 106, 87, 0.2);
+  position: relative;
+  animation: titleGlow 3s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0%, 100% { text-shadow: 0 2px 20px rgba(187, 106, 87, 0.2); }
+  50% { text-shadow: 0 2px 30px rgba(187, 106, 87, 0.4); }
+}
+
+/* Grupos de formulario con animación */
+.form-group {
+  margin-bottom: 1.5rem;
+  animation: slideIn 0.5s ease forwards;
+  opacity: 0;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.form-group label {
+  display: block;
+  color: #a57865;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+/* Inputs con efecto mágico */
+.form-group input {
+  width: 35vw;
+  padding: 12px 16px;
+  border: 2px solid #e9d2a9;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: rgba(255, 253, 249, 0.8);
+  color: #7b5747;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  outline: none;
+  box-shadow: inset 0 2px 8px rgba(123, 87, 71, 0.05);
+}
+
+.form-group input:focus {
+  border-color: #bb6a57;
+  background: #fffdf9;
+  box-shadow: 0 0 0 4px rgba(187, 106, 87, 0.1),
+              inset 0 2px 8px rgba(123, 87, 71, 0.08);
+  transform: translateY(-2px);
+}
+
+.form-group input:focus + label,
+.form-group input:focus ~ label {
+  color: #bb6a57;
+}
+
+/* Botón principal con animación de pulso */
+.btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #bb6a57 0%, #a57865 100%);
+  color: #fffaf3;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 6px 20px rgba(187, 106, 87, 0.3);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn:hover::before {
+  width: 400px;
+  height: 400px;
+}
+
+.btn:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(187, 106, 87, 0.45);
+  background: linear-gradient(135deg, #a57865 0%, #7b5747 100%);
+}
+
+.btn:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+/* Enlaces con efecto hover */
+.form-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #a57865;
+  font-size: 0.95rem;
+}
+
+.form-link a {
+  color: #bb6a57;
+  font-weight: 600;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+  padding: 2px 4px;
+}
+
+.form-link a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #bb6a57, #a57865);
+  transition: width 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.form-link a:hover::after {
+  width: 100%;
+}
+
+.form-link a:hover {
+  color: #a57865;
+  text-shadow: 0 2px 10px rgba(187, 106, 87, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .auth-card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+  
+  .fade-container h2 {
+    font-size: 1.6rem;
+  }
+}

@@ -1,0 +1,405 @@
+/* Contenedor principal */
+.anadir-libros-container {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5ede3 0%, #fffdf9 100%);
+  padding: 3rem 5rem;
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header de la página */
+.header-anadir {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: slideDown 0.8s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.header-anadir h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #7b5747;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 2px 15px rgba(187, 106, 87, 0.15);
+}
+
+.header-anadir h1 span {
+  color: #bb6a57;
+  position: relative;
+}
+
+.header-anadir h1 span::after {
+  content: '✨';
+  position: absolute;
+  right: -30px;
+  top: -5px;
+  font-size: 20px;
+  animation: sparkle 3s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+}
+
+.header-anadir p {
+  font-size: 1.15rem;
+  color: #a57865;
+  font-weight: 500;
+}
+
+/* Formulario principal */
+.formulario-libro {
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(255, 253, 249, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 30px;
+  padding: 3rem;
+  box-shadow: 0 15px 50px rgba(123, 87, 71, 0.15),
+              0 0 80px rgba(187, 106, 87, 0.08);
+  border: 2px solid rgba(233, 210, 169, 0.3);
+  position: relative;
+  overflow: hidden;
+  animation: scaleIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Brillo mágico del formulario */
+.formulario-libro::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  animation: shimmer 10s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+  50% { transform: translate(0%, 0%) scale(1); opacity: 1; }
+}
+
+/* Secciones del formulario */
+.seccion-formulario {
+  margin-bottom: 2.5rem;
+  animation: slideIn 0.6s ease forwards;
+  opacity: 0;
+}
+
+.seccion-formulario:nth-child(1) { animation-delay: 0.2s; }
+.seccion-formulario:nth-child(2) { animation-delay: 0.4s; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.seccion-formulario h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #7b5747;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 3px solid #e9d2a9;
+  position: relative;
+}
+
+.seccion-formulario h2::before {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #bb6a57, #a57865);
+  animation: expandLine 0.8s ease forwards;
+}
+
+@keyframes expandLine {
+  from { width: 0; }
+  to { width: 80px; }
+}
+
+/* Grupos de input */
+.grupo-input {
+  margin-bottom: 1.8rem;
+  position: relative;
+}
+
+.grupo-input label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #a57865;
+  margin-bottom: 0.6rem;
+  transition: color 0.3s ease;
+}
+
+.grupo-input input[type="text"],
+.grupo-input textarea {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #e9d2a9;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  background: rgba(255, 253, 249, 0.8);
+  color: #7b5747;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  outline: none;
+  box-shadow: inset 0 2px 8px rgba(123, 87, 71, 0.05);
+}
+
+.grupo-input input[type="text"]:focus,
+.grupo-input textarea:focus {
+  border-color: #bb6a57;
+  background: #fffdf9;
+  box-shadow: 0 0 0 4px rgba(187, 106, 87, 0.1),
+              inset 0 2px 8px rgba(123, 87, 71, 0.08);
+  transform: translateY(-2px);
+}
+
+.grupo-input input[type="text"]:focus + label,
+.grupo-input textarea:focus ~ label {
+  color: #bb6a57;
+}
+
+/* Textarea específico */
+.grupo-input textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
+}
+
+/* Contador de caracteres */
+.contador-caracteres {
+  display: block;
+  text-align: right;
+  font-size: 0.85rem;
+  color: #a57865;
+  margin-top: 0.4rem;
+  font-weight: 500;
+}
+
+/* Grupos de archivo */
+.grupo-archivo {
+  margin-top: 1.5rem;
+}
+
+.contenedor-carga {
+  margin-top: 0.8rem;
+}
+
+.label-archivo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 1.5rem;
+  background: linear-gradient(135deg, #fffdf9 0%, #f5ede3 100%);
+  border: 2px dashed #bb6a57;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+  overflow: hidden;
+}
+
+.label-archivo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(187, 106, 87, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.label-archivo:hover::before {
+  left: 100%;
+}
+
+.label-archivo:hover {
+  background: linear-gradient(135deg, #f5ede3 0%, #e9d2a9 100%);
+  border-color: #a57865;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(187, 106, 87, 0.15);
+}
+
+.icono-archivo {
+  font-size: 2rem;
+  filter: drop-shadow(0 2px 8px rgba(187, 106, 87, 0.2));
+}
+
+.texto-archivo {
+  font-size: 1rem;
+  color: #7b5747;
+  font-weight: 500;
+}
+
+.grupo-input small {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: #a57865;
+  font-style: italic;
+}
+
+/* Preview de portada */
+.preview-portada {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  animation: zoomIn 0.5s ease;
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.preview-portada img {
+  max-width: 250px;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(123, 87, 71, 0.25);
+  border: 4px solid #e9d2a9;
+  transition: transform 0.3s ease;
+}
+
+.preview-portada img:hover {
+  transform: scale(1.05) rotate(2deg);
+  box-shadow: 0 15px 40px rgba(187, 106, 87, 0.3);
+}
+
+/* Mensajes de estado */
+.mensaje {
+  padding: 1.2rem 1.5rem;
+  border-radius: 14px;
+  margin: 2rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  animation: slideIn 0.4s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mensaje.exito {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+  border: 2px solid #28a745;
+}
+
+.mensaje.error {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  color: #721c24;
+  border: 2px solid #dc3545;
+}
+
+/* Botón enviar */
+.button-enviar {
+  width: 100%;
+  padding: 1.2rem;
+  background: linear-gradient(135deg, #bb6a57 0%, #a57865 100%);
+  color: #fffaf3;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 2rem;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 8px 25px rgba(187, 106, 87, 0.3);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.boton-enviar::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.boton-enviar:hover::before {
+  width: 400px;
+  height: 400px;
+}
+
+.boton-enviar:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(187, 106, 87, 0.45);
+  background: linear-gradient(135deg, #a57865 0%, #7b5747 100%);
+}
+
+.boton-enviar:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.boton-enviar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  background: #ccc;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .anadir-libros-container {
+    padding: 2rem 1rem;
+  }
+
+  .header-anadir h1 {
+    font-size: 2rem;
+  }
+
+  .formulario-libro {
+    padding: 2rem 1.5rem;
+  }
+
+  .preview-portada img {
+    max-width: 200px;
+    max-height: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-anadir h1 {
+    font-size: 1.6rem;
+  }
+
+  .formulario-libro {
+    padding: 1.5rem 1rem;
+  }
+
+  .boton-enviar {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+}

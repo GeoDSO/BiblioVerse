@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Nav from './componentes/nav.js';
-import HomePage from './componentes/homepage.jsx'; // 👈 Nuevo componente con los libros recomendados
+import HomePage from './componentes/homepage.jsx'; 
+import LoginRegister from './componentes/loginregister.jsx';
 import './app.css';
 
 // ============== COMPONENTE PRINCIPAL ==============
@@ -52,7 +53,6 @@ function App() {
 
       if (response.ok) {
         alert('¡Registro exitoso! Ahora puedes iniciar sesión');
-        setVistaActual('login');
       } else {
         alert('Error al registrarse');
       }
@@ -65,18 +65,19 @@ function App() {
     <div className="App">
       <Nav usuario={usuario} onLogout={handleLogout} onNavigate={handleNavigate} />
 
-      <main className="main">
+      <main className={`main ${vistaActual === 'login' ? 'modo-login' : ''}`}>
         {vistaActual === 'login' && (
-          <LoginForm onLogin={handleLogin} onGoToRegister={() => setVistaActual('register')} />
-        )}
-
-        {vistaActual === 'register' && (
-          <RegisterForm onRegister={handleRegister} onGoToLogin={() => setVistaActual('login')} />
+          <LoginRegister 
+            onLogin={handleLogin} 
+            onRegister={handleRegister}
+          />
         )}
 
         {vistaActual === 'home' && <HomePage usuario={usuario} />}
 
         {vistaActual === 'bibliotecas' && usuario && <ListaBiblioteca usuario={usuario} />}
+
+        {vistaActual === 'añadir-libros' && usuario && <AnadirLibros usuario={usuario} />}
 
         {vistaActual === 'explorar' && <ExplorarPage />}
       </main>
@@ -122,7 +123,7 @@ function ListaBiblioteca({ usuario }) {
   );
 }
 
-// 🔎 Página de explorar (puedes ampliar luego)
+// 🔎 Página de explorar
 function ExplorarPage() {
   return (
     <div>
@@ -132,54 +133,79 @@ function ExplorarPage() {
   );
 }
 
-// 🔐 Formulario de Login
-function LoginForm({ onLogin, onGoToRegister }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+// 📖 Componente para añadir libros
+function AnadirLibros({ usuario }) {
+  const [titulo, setTitulo] = useState('');
+  const [autor, setAutor] = useState('');
+  const [isbn, setIsbn] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onLogin(email, password);
+    try {
+      const API_URL = process.env.REACT_APP_API_URL;
+      const response = await fetch(`${API_URL}/api/libros/crear`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          titulo, 
+          autor, 
+          isbn, 
+          usuarioId: usuario.id 
+        }),
+      });
+
+      if (response.ok) {
+        alert('¡Libro añadido exitosamente!');
+        setTitulo('');
+        setAutor('');
+        setIsbn('');
+      } else {
+        const errorData = await response.json();
+        alert(`Error al añadir el libro: ${errorData.message || 'Error desconocido'}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión con el servidor');
+    }
   };
 
   return (
-    <div className="form-container">
-      <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Contraseña" required />
-        <button type="submit">Entrar</button>
+    <div className="anadir-libros-container">
+      <h2>📖 Añadir Nuevo Libro</h2>
+      <form onSubmit={handleSubmit} className="form-libro">
+        <div className="form-group">
+          <label>Título:</label>
+          <input
+            type="text"
+            value={titulo}
+            onChange={(e) => setTitulo(e.target.value)}
+            required
+            placeholder="Ingresa el título del libro"
+          />
+        </div>
+        <div className="form-group">
+          <label>Autor:</label>
+          <input
+            type="text"
+            value={autor}
+            onChange={(e) => setAutor(e.target.value)}
+            required
+            placeholder="Ingresa el autor"
+          />
+        </div>
+        <div className="form-group">
+          <label>ISBN:</label>
+          <input
+            type="text"
+            value={isbn}
+            onChange={(e) => setIsbn(e.target.value)}
+            placeholder="Ingresa el ISBN (opcional)"
+          />
+        </div>
+        <button type="submit" className="btn-submit">
+          Añadir Libro
+        </button>
       </form>
-      <p>
-        ¿No tienes cuenta? <button onClick={onGoToRegister}>Regístrate</button>
-      </p>
-    </div>
-  );
-}
-
-// 📝 Formulario de Registro
-function RegisterForm({ onRegister, onGoToLogin }) {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onRegister(email, username, password);
-  };
-
-  return (
-    <div className="form-container">
-      <h2>Crear Cuenta</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Nombre de usuario" required />
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Contraseña" required />
-        <button type="submit">Registrarse</button>
-      </form>
-      <p>
-        ¿Ya tienes cuenta? <button onClick={onGoToLogin}>Inicia sesión</button>
-      </p>
     </div>
   );
 }

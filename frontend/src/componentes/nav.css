@@ -1,12 +1,26 @@
+/* Navbar principal con efecto de brillo sutil */
 .navbar {
-  background: #ede2d0; /* buttercream */
-  border-bottom: 3px solid #e9d2a9; /* wheat */
-  box-shadow: 0 4px 15px rgba(123, 87, 71, 0.1);
+  background: linear-gradient(135deg, #ede2d0 0%, #f5ede3 100%);
+  border-bottom: 3px solid #e9d2a9;
+  box-shadow: 0 4px 15px rgba(123, 87, 71, 0.1), 
+              0 0 40px rgba(187, 106, 87, 0.05);
   position: sticky;
   top: 0;
   z-index: 1000;
   transition: all 0.3s ease;
   border-radius: 0 0 25px 25px;
+  animation: navGlow 8s ease-in-out infinite;
+}
+
+@keyframes navGlow {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(123, 87, 71, 0.1), 
+                0 0 40px rgba(187, 106, 87, 0.05);
+  }
+  50% {
+    box-shadow: 0 4px 15px rgba(123, 87, 71, 0.15), 
+                0 0 50px rgba(187, 106, 87, 0.08);
+  }
 }
 
 .nav-container {
@@ -19,19 +33,45 @@
   font-family: 'Poppins', sans-serif;
 }
 
-.nav-logo {
+/* Logo con efecto de brillo y flotación */
+.logo {
   font-size: 26px;
   font-weight: 700;
-  color: #7b5747; /* cacao nibs */
+  color: #7b5747;
   cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+  text-shadow: 0 2px 10px rgba(187, 106, 87, 0.1);
+}
+
+.logo::after {
+  content: '✨';
+  position: absolute;
+  right: -25px;
+  top: -5px;
+  font-size: 16px;
+  opacity: 0;
   transition: all 0.3s ease;
+  animation: sparkle 3s ease-in-out infinite;
 }
 
-.nav-logo:hover {
-  color: #bb6a57; /* apricot brandy */
-  transform: translateY(-2px);
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
 }
 
+.logo:hover {
+  color: #bb6a57;
+  transform: translateY(-3px) scale(1.05);
+  text-shadow: 0 4px 20px rgba(187, 106, 87, 0.3);
+}
+
+.logo:hover::after {
+  opacity: 1;
+  right: -30px;
+}
+
+/* Menú con animaciones suaves */
 .nav-menu {
   display: flex;
   list-style: none;
@@ -46,49 +86,134 @@
   color: #7b5747;
   font-weight: 500;
   font-size: 16px;
-  transition: color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   border-radius: 12px;
-  padding: 6px 12px;
+  padding: 8px 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto de onda mágica al hover */
+.nav-menu li::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(187, 106, 87, 0.15) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.nav-menu li:hover::before {
+  width: 200px;
+  height: 200px;
 }
 
 .nav-menu li:hover {
-  color: #ede2d0;
-  background-color: #bb6a57;
-  transform: translateY(-2px);
+  color: #fffaf3;
+  background: linear-gradient(135deg, #bb6a57 0%, #a57865 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(187, 106, 87, 0.25);
 }
 
+/* Usuario con efecto de brillo */
 .nav-user {
   display: flex;
   align-items: center;
   gap: 15px;
+  background: rgba(255, 250, 243, 0.5);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(187, 106, 87, 0.1);
+  transition: all 0.3s ease;
+}
+
+.nav-user:hover {
+  background: rgba(255, 250, 243, 0.8);
+  box-shadow: 0 4px 15px rgba(187, 106, 87, 0.15);
+  transform: translateY(-2px);
 }
 
 .nav-user span {
-  color: #a57865; /* mocha mousse */
+  color: #a57865;
   font-weight: 600;
   font-size: 15px;
+  animation: fadeIn 0.5s ease;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Botón de logout con efecto de pulso */
 .btn-logout {
-  padding: 8px 18px;
-  background: linear-gradient(135deg, #bb6a57 0%, #793937 100%);
+  padding: 9px 20px;
+  background: linear-gradient(135deg, #bb6a57 0%, #a57865 100%);
   color: #fffaf3;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   font-size: 15px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(185, 106, 87, 0.2);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 4px 12px rgba(185, 106, 87, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-logout::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease;
+}
+
+.btn-logout:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .btn-logout:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.05);
   background: linear-gradient(135deg, #a57865 0%, #7b5747 100%);
-  box-shadow: 0 6px 14px rgba(185, 106, 87, 0.3);
+  box-shadow: 0 6px 20px rgba(185, 106, 87, 0.35);
 }
 
+.btn-logout:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Efecto de scroll con cambio de fondo */
 .navbar.scrolled {
-  background: #e9d2a9; /* wheat */
+  background: linear-gradient(135deg, #e9d2a9 0%, #ede2d0 100%);
   box-shadow: 0 6px 20px rgba(123, 87, 71, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-menu {
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  
+  .nav-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .logo {
+    font-size: 22px;
+  }
 }

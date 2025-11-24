@@ -12,11 +12,11 @@ useEffect(() => {
     gsap.to(principitoRef.current, {
       y: -35,
       rotation: 10,
-      duration: 6, // un pelín más rápido y notorio
+      duration: 6, 
       ease: "sine.inOut",
       repeat: -1,
       yoyo: true,
-      transformOrigin: "center center", // suaviza el giro
+      transformOrigin: "center center", 
     });
   }
 }, []);
