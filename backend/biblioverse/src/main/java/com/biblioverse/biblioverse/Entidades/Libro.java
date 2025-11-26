@@ -16,19 +16,17 @@ public class Libro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include  // ← Solo usa el ID
+    @EqualsAndHashCode.Include
     private Long id;
 
     private String titulo;
     private String autor;
-
     private String descripcion;
 
-    // Rutas de archivos
+    private Boolean esPublico = true;  // ← NUEVO CAMPO
+
     private String rutaPdf;
     private String rutaPortada;
-
-
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
@@ -38,5 +36,5 @@ public class Libro {
     @ManyToOne
     @JoinColumn(name = "biblioteca_id")
     @JsonBackReference("libro-biblioteca")
-    private Biblioteca biblioteca;
+    private Biblioteca biblioteca;  // NULL si es público
 }

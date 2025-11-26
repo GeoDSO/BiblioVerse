@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class LibroService {
@@ -35,24 +35,35 @@ public class LibroService {
     private final String UPLOAD_DIR = "uploads/";
 
     public Libro subirLibro(String titulo, String autor, String descripcion,
-                            Long idUsuario,
+                            Long idUsuario, Boolean esPublico, Long idBiblioteca,
                             MultipartFile archivoPdf, MultipartFile portada) {
 
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-
-        // Crear directorio si no existe
-        File uploadDir = new File(UPLOAD_DIR);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
 
         Libro libro = new Libro();
         libro.setTitulo(titulo);
         libro.setAutor(autor);
         libro.setDescripcion(descripcion);
         libro.setAgregador(usuario);
+        libro.setEsPublico(esPublico);
+
+        // Si es PRIVADO, debe tener biblioteca
+        if (!esPublico) {
+            if (idBiblioteca == null) {
+                throw new RuntimeException("Los libros privados deben estar en una biblioteca");
+            }
+            Biblioteca biblioteca = bibliotecaRepository.findById(idBiblioteca)
+                    .orElseThrow(() -> new RuntimeException("Biblioteca no encontrada"));
+            libro.setBiblioteca(biblioteca);
+        }
+        // Si es PÚBLICO, biblioteca queda en NULL
+
+        // Crear directorio si no existe
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
 
         // Guardar PDF
         if (archivoPdf != null && !archivoPdf.isEmpty()) {
@@ -97,6 +108,32 @@ public class LibroService {
 
     public List<Libro> listarLibros() {
         return libroRepository.findAll();
+    }
+
+    /**
+     * Lista solo los libros públicos (explorador)
+     */
+    public List<Libro> listarLibrosPublicos() {
+        return libroRepository.findAll().stream()
+                .filter(Libro::getEsPublico)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Lista libros visibles para un usuario específico:
+     * - Todos los públicos
+     * - Los privados que el usuario agregó
+     * - Los privados en bibliotecas del usuario
+     */
+    public List<Libro> listarLibrosVisiblesPara(Long idUsuario) {
+        return libroRepository.findAll().stream()
+                .filter(libro ->
+                        libro.getEsPublico() ||
+                                libro.getAgregador().getId().equals(idUsuario) ||
+                                (libro.getBiblioteca() != null &&
+                                        libro.getBiblioteca().getCreador().getId().equals(idUsuario))
+                )
+                .collect(Collectors.toList());
     }
 
     public List<Libro> buscarLibros(String titulo, String username) {

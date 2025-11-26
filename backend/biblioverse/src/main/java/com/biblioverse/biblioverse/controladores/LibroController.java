@@ -25,12 +25,14 @@ public class LibroController {
             @RequestParam("autor") String autor,
             @RequestParam(value = "descripcion", required = false) String descripcion,
             @RequestParam("idUsuario") Long idUsuario,
+            @RequestParam("esPublico") Boolean esPublico,
+            @RequestParam(value = "idBiblioteca", required = false) Long idBiblioteca,
             @RequestParam(value = "archivoPdf", required = false) MultipartFile archivoPdf,
             @RequestParam(value = "portada", required = false) MultipartFile portada) {
 
         Libro libro = libroService.subirLibro(
                 titulo, autor, descripcion,
-                idUsuario,
+                idUsuario, esPublico, idBiblioteca,
                 archivoPdf, portada
         );
 
@@ -40,6 +42,22 @@ public class LibroController {
     @GetMapping("/listar")
     public List<Libro> listarLibros() {
         return libroService.listarLibros();
+    }
+
+    /**
+     * Endpoint específico para el explorador - solo libros públicos
+     */
+    @GetMapping("/explorador")
+    public List<Libro> listarLibrosExplorador() {
+        return libroService.listarLibrosPublicos();
+    }
+
+    /**
+     * Endpoint para listar libros visibles para un usuario específico
+     */
+    @GetMapping("/visibles/{idUsuario}")
+    public List<Libro> listarLibrosVisibles(@PathVariable Long idUsuario) {
+        return libroService.listarLibrosVisiblesPara(idUsuario);
     }
 
     @GetMapping("/buscar")

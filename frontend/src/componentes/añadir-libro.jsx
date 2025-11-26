@@ -1,28 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './añadir-libro.css';
 
 function AnadirLibro({ usuario }) {
-  // Estados del formulario
   const [formData, setFormData] = useState({
     titulo: '',
     autor: '',
-    descripcion: ''
+    descripcion: '',
+    esPublico: true,  // ← NUEVO: por defecto público
+    idBiblioteca: ''
   });
 
+  const [bibliotecas, setBibliotecas] = useState([]);
   const [archivoPDF, setArchivoPDF] = useState(null);
   const [portada, setPortada] = useState(null);
   const [previewPortada, setPreviewPortada] = useState(null);
   const [mensaje, setMensaje] = useState('');
   const [cargando, setCargando] = useState(false);
 
-  // Cambios en inputs
+  // Cargar bibliotecas del usuario al montar
+  useEffect(() => {
+    cargarBibliotecas();
+  }, []);
+
+  const cargarBibliotecas = async () => {
+    try {
+      const response = await fetch('http://localhost:8081/api/bibliotecas/listar');
+      const data = await response.json();
+      // Filtrar solo las del usuario actual
+      const misBibliotecas = data.filter(b => b.creador.id === usuario.id);
+      setBibliotecas(misBibliotecas);
+    } catch (error) {
+      console.error('Error al cargar bibliotecas:', error);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setMensaje('');
   };
 
-  // Cambios en archivo PDF
+  const handleVisibilidadChange = (esPublico) => {
+    setFormData(prev => ({ 
+      ...prev, 
+      esPublico,
+      idBiblioteca: esPublico ? '' : prev.idBiblioteca  // Limpiar biblioteca si es público
+    }));
+  };
+
   const handlePDFChange = (e) => {
     const archivo = e.target.files[0];
     if (!archivo) {
@@ -43,7 +68,6 @@ function AnadirLibro({ usuario }) {
     setMensaje('✅ PDF cargado correctamente');
   };
 
-  // Cambios en portada
   const handlePortadaChange = (e) => {
     const archivo = e.target.files[0];
     if (!archivo) {
@@ -70,12 +94,12 @@ function AnadirLibro({ usuario }) {
     setMensaje('✅ Portada cargada correctamente');
   };
 
-  // Enviar formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     setCargando(true);
     setMensaje('');
 
+    // Validaciones
     if (!formData.titulo.trim()) {
       setMensaje('⚠️ Debes ingresar un título');
       setCargando(false);
@@ -87,9 +111,9 @@ function AnadirLibro({ usuario }) {
       return;
     }
 
-    // Validación de usuario
-    if (!usuario || !usuario.id) {
-      setMensaje('❌ Usuario no logueado');
+    // Si es PRIVADO, debe seleccionar biblioteca
+    if (!formData.esPublico && !formData.idBiblioteca) {
+      setMensaje('⚠️ Los libros privados deben estar en una biblioteca');
       setCargando(false);
       return;
     }
@@ -100,11 +124,15 @@ function AnadirLibro({ usuario }) {
       datos.append('autor', formData.autor);
       datos.append('descripcion', formData.descripcion);
       datos.append('idUsuario', usuario.id);
-
+      datos.append('esPublico', formData.esPublico);
+      
+      // Solo enviar idBiblioteca si es privado
+      if (!formData.esPublico) {
+        datos.append('idBiblioteca', formData.idBiblioteca);
+      }
+      
       if (archivoPDF) datos.append('archivoPdf', archivoPDF);
       if (portada) datos.append('portada', portada);
-
-      console.log('Enviando libro con ID usuario:', usuario.id);
 
       const response = await fetch('http://localhost:8081/api/libros/subir', {
         method: 'POST',
@@ -113,13 +141,13 @@ function AnadirLibro({ usuario }) {
 
       if (response.ok) {
         setMensaje('✅ ¡Libro agregado exitosamente!');
-        setFormData({ titulo: '', autor: '', descripcion: '' });
+        setFormData({ titulo: '', autor: '', descripcion: '', esPublico: true, idBiblioteca: '' });
         setArchivoPDF(null);
         setPortada(null);
         setPreviewPortada(null);
       } else {
         const errorData = await response.json().catch(() => ({}));
-        setMensaje(`❌ Error al agregar el libro: ${errorData.message || ''}`);
+        setMensaje(`❌ Error: ${errorData.message || 'No se pudo agregar el libro'}`);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -131,8 +159,66 @@ function AnadirLibro({ usuario }) {
 
   return (
     <div className="anadir-libros-container">
-      <form className="formulario-libro" onSubmit={handleSubmit}>
+      <header className="header-anadir">
+        <h1>AGREGAR <span>NUEVO LIBRO</span></h1>
+        <p>Comparte tus libros con todos o guárdalos en tu biblioteca privada</p>
+      </header>
 
+      <form className="formulario-libro" onSubmit={handleSubmit}>
+        
+        {/* VISIBILIDAD */}
+        <div className="seccion-formulario">
+          <h2>Visibilidad del Libro</h2>
+          
+          <div className="visibilidad-opciones">
+            <div 
+              className={`opcion-visibilidad ${formData.esPublico ? 'activa' : ''}`}
+              onClick={() => handleVisibilidadChange(true)}
+            >
+              <div className="icono-opcion">🌍</div>
+              <h3>Público</h3>
+              <p>Todos los usuarios podrán ver este libro en el explorador</p>
+            </div>
+
+            <div 
+              className={`opcion-visibilidad ${!formData.esPublico ? 'activa' : ''}`}
+              onClick={() => handleVisibilidadChange(false)}
+            >
+              <div className="icono-opcion">🔒</div>
+              <h3>Privado</h3>
+              <p>Solo tú y los miembros de tu biblioteca podrán verlo</p>
+            </div>
+          </div>
+        </div>
+
+        {/* SELECCIÓN DE BIBLIOTECA (solo si es privado) */}
+        {!formData.esPublico && (
+          <div className="seccion-formulario">
+            <h2>Selecciona una Biblioteca</h2>
+            <div className="grupo-input">
+              <label htmlFor="idBiblioteca">Biblioteca *</label>
+              <select
+                id="idBiblioteca"
+                name="idBiblioteca"
+                value={formData.idBiblioteca}
+                onChange={handleInputChange}
+                className="select-biblioteca"
+              >
+                <option value="">Selecciona una biblioteca...</option>
+                {bibliotecas.map(bib => (
+                  <option key={bib.id} value={bib.id}>
+                    {bib.nombre} {bib.esPublica ? '🌍' : '🔒'}
+                  </option>
+                ))}
+              </select>
+              {bibliotecas.length === 0 && (
+                <small className="aviso">⚠️ No tienes bibliotecas. Crea una primero.</small>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* INFORMACIÓN DEL LIBRO */}
         <div className="seccion-formulario">
           <h2>Información del Libro</h2>
 
@@ -173,6 +259,7 @@ function AnadirLibro({ usuario }) {
           </div>
         </div>
 
+        {/* ARCHIVOS */}
         <div className="seccion-formulario">
           <h2>Archivos</h2>
 

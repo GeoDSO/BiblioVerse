@@ -157,3 +157,68 @@
     font-size: 1.7rem;
   }
 }
+
+/* Agregar al final del archivo CSS */
+
+.visibilidad-opciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.opcion-visibilidad {
+  padding: 25px;
+  border: 3px solid #e0e0e0;
+  border-radius: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.opcion-visibilidad:hover {
+  border-color: #667eea;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.opcion-visibilidad.activa {
+  border-color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+}
+
+.icono-opcion {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.opcion-visibilidad h3 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.opcion-visibilidad p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.select-biblioteca {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.select-biblioteca:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.aviso {
+  display: block;
+  margin-top: 8px;
+  color: #ff6b6b;
+  font-weight: 500;
+}

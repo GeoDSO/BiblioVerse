@@ -132,9 +132,9 @@ function App() {
           <AnadirLibro usuario={usuario} />
         )}
 
-        {/* Página de exploración */}
-        {vistaActual === 'explorar' && <ExplorarPage />}
-
+        {vistaActual === 'explorador' && usuario && (
+  <ExplorarPage usuario={usuario} />
+)}
       </main>
 
     </div>

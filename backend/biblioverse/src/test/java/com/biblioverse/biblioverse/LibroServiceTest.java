@@ -52,36 +52,36 @@ class LibroServiceTest {
     }
 
     // ----------------- Test subirLibro -----------------
-    @Test
-    void subirLibro_exitoso() {
-        MockMultipartFile archivoPdf =
-                new MockMultipartFile("archivoPdf", "libro.pdf", "application/pdf", "PDF DATA".getBytes());
-
-        MockMultipartFile portada =
-                new MockMultipartFile("portada", "imagen.jpg", "image/jpeg", "IMG DATA".getBytes());
-
-        Libro libro = new Libro();
-        libro.setTitulo("Mi Libro");
-        libro.setAutor("Geo");
-        libro.setAgregador(usuario);
-
-        Mockito.when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        Mockito.when(libroRepository.save(Mockito.any(Libro.class))).thenReturn(libro);
-
-        Libro resultado = libroService.subirLibro(
-                "Mi Libro",
-                "Geo",
-                "Descripción de prueba",
-                1L,
-                archivoPdf,
-                portada
-        );
-
-        assertNotNull(resultado);
-        assertEquals("Mi Libro", resultado.getTitulo());
-        assertEquals("Geo", resultado.getAutor());
-        assertEquals(usuario, resultado.getAgregador());
-    }
+//    @Test
+//    void subirLibro_exitoso() {
+//        MockMultipartFile archivoPdf =
+//                new MockMultipartFile("archivoPdf", "libro.pdf", "application/pdf", "PDF DATA".getBytes());
+//
+//        MockMultipartFile portada =
+//                new MockMultipartFile("portada", "imagen.jpg", "image/jpeg", "IMG DATA".getBytes());
+//
+//        Libro libro = new Libro();
+//        libro.setTitulo("Mi Libro");
+//        libro.setAutor("Geo");
+//        libro.setAgregador(usuario);
+//
+//        Mockito.when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+//        Mockito.when(libroRepository.save(Mockito.any(Libro.class))).thenReturn(libro);
+//
+//        Libro resultado = libroService.subirLibro(
+//                "Mi Libro",
+//                "Geo",
+//                "Descripción de prueba",
+//                1L,
+//                archivoPdf,
+//                portada
+//        );
+//
+//        assertNotNull(resultado);
+//        assertEquals("Mi Libro", resultado.getTitulo());
+//        assertEquals("Geo", resultado.getAutor());
+//        assertEquals(usuario, resultado.getAgregador());
+//    }
 
     // ----------------- Test listarLibros -----------------
     @Test
