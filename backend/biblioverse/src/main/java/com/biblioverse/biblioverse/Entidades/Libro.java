@@ -22,6 +22,14 @@ public class Libro {
     private String titulo;
     private String autor;
 
+    private String descripcion;
+
+    // Rutas de archivos
+    private String rutaPdf;
+    private String rutaPortada;
+
+
+
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     @JsonBackReference("libro-agregador")

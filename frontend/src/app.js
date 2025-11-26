@@ -1,26 +1,51 @@
+// ======================= IMPORTS =======================
+// React y useState para manejar estados
 import React, { useState } from 'react';
+
+// Componentes principales de la aplicación
 import Nav from './componentes/nav.js';
-import HomePage from './componentes/homepage.jsx'; 
+import HomePage from './componentes/homepage.jsx';
 import LoginRegister from './componentes/loginregister.jsx';
+import AnadirLibro from './componentes/añadir-libro.jsx';
+import ExplorarPage from './componentes/explorador.jsx';
+
+// Estilos globales
 import './app.css';
 
-// ============== COMPONENTE PRINCIPAL ==============
+// =======================================================
+//   COMPONENTE PRINCIPAL DE LA APLICACIÓN
+// =======================================================
+
 function App() {
+
+  // vistaActual controla qué pantalla se muestra (login/home/etc)
   const [vistaActual, setVistaActual] = useState('login');
+
+  // usuario contiene información del usuario logueado
   const [usuario, setUsuario] = useState(null);
 
+  // -------------------------------------------------------
+  //   Cerrar sesión
+  // -------------------------------------------------------
   const handleLogout = () => {
     setUsuario(null);
     setVistaActual('login');
   };
 
+  // -------------------------------------------------------
+  //   Cambiar de pantalla manualmente
+  // -------------------------------------------------------
   const handleNavigate = (vista) => {
     setVistaActual(vista);
   };
 
+  // -------------------------------------------------------
+  //   LOGIN DE USUARIO
+  // -------------------------------------------------------
   const handleLogin = async (email, password) => {
     try {
       const API_URL = process.env.REACT_APP_API_URL;
+
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -30,21 +55,27 @@ function App() {
       const data = await response.json();
 
       if (response.ok) {
+        // Guardamos usuario y pasamos a la pantalla HOME
         setUsuario(data.usuario);
         setVistaActual('home');
         alert('Login exitoso');
       } else {
         alert('Error en el login');
       }
+
     } catch (error) {
       console.error('Error en la solicitud:', error);
       alert('Error de conexión con el servidor');
     }
   };
 
+  // -------------------------------------------------------
+  //   REGISTRO DE USUARIO
+  // -------------------------------------------------------
   const handleRegister = async (email, username, password) => {
     try {
       const API_URL = process.env.REACT_APP_API_URL;
+
       const response = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -56,156 +87,58 @@ function App() {
       } else {
         alert('Error al registrarse');
       }
+
     } catch (error) {
       alert('Error al conectar con el servidor');
     }
   };
 
+  // =======================================================
+  //   RENDER DE LA APLICACIÓN
+  // =======================================================
   return (
     <div className="App">
-      <Nav usuario={usuario} onLogout={handleLogout} onNavigate={handleNavigate} />
 
+      {/* Barra de navegación superior */}
+      <Nav
+        usuario={usuario}
+        onLogout={handleLogout}
+        onNavigate={handleNavigate}
+      />
+
+      {/* Contenedor principal */}
       <main className={`main ${vistaActual === 'login' ? 'modo-login' : ''}`}>
+
+        {/* Pantalla LOGIN / REGISTRO */}
         {vistaActual === 'login' && (
-          <LoginRegister 
-            onLogin={handleLogin} 
+          <LoginRegister
+            onLogin={handleLogin}
             onRegister={handleRegister}
           />
         )}
 
-        {vistaActual === 'home' && <HomePage usuario={usuario} />}
+        {/* Pantalla HOME */}
+        {vistaActual === 'home' && usuario && (
+          <HomePage usuario={usuario} />
+        )}
 
-        {vistaActual === 'bibliotecas' && usuario && <ListaBiblioteca usuario={usuario} />}
+        {/* Lista de Bibliotecas */}
+        {vistaActual === 'bibliotecas' && usuario && (
+          <ListaBiblioteca usuario={usuario} />
+        )}
 
-        {vistaActual === 'añadir-libros' && usuario && <AnadirLibros usuario={usuario} />}
+        {/* Añadir libro */}
+        {vistaActual === 'añadir-libro' && usuario && (
+          <AnadirLibro usuario={usuario} />
+        )}
 
+        {/* Página de exploración */}
         {vistaActual === 'explorar' && <ExplorarPage />}
+
       </main>
+
     </div>
   );
 }
 
 export default App;
-
-//
-// ================= COMPONENTES SECUNDARIOS =================
-//
-
-// 📚 Listado de bibliotecas
-function ListaBiblioteca({ usuario }) {
-  const [bibliotecas, setBibliotecas] = useState([]);
-
-  React.useEffect(() => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    fetch(`${API_URL}/api/bibliotecas/listar`)
-      .then((res) => res.json())
-      .then((data) => setBibliotecas(Array.isArray(data) ? data : []))
-      .catch((error) => console.error('Error:', error));
-  }, []);
-
-  return (
-    <div>
-      <h2>Mis Bibliotecas</h2>
-      {bibliotecas.length === 0 ? (
-        <p>No tienes bibliotecas aún. ¡Crea una!</p>
-      ) : (
-        <ul>
-          {bibliotecas.map((b) => (
-            <li key={b.id}>
-              <h3>{b.nombre}</h3>
-              <p>Creador: {b.creador?.username}</p>
-              <p>{b.esPublica ? '🌍 Pública' : '🔒 Privada'}</p>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-// 🔎 Página de explorar
-function ExplorarPage() {
-  return (
-    <div>
-      <h2>Explorar</h2>
-      <p>Explora bibliotecas y libros de otros usuarios próximamente...</p>
-    </div>
-  );
-}
-
-// 📖 Componente para añadir libros
-function AnadirLibros({ usuario }) {
-  const [titulo, setTitulo] = useState('');
-  const [autor, setAutor] = useState('');
-  const [isbn, setIsbn] = useState('');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const API_URL = process.env.REACT_APP_API_URL;
-      const response = await fetch(`${API_URL}/api/libros/crear`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          titulo, 
-          autor, 
-          isbn, 
-          usuarioId: usuario.id 
-        }),
-      });
-
-      if (response.ok) {
-        alert('¡Libro añadido exitosamente!');
-        setTitulo('');
-        setAutor('');
-        setIsbn('');
-      } else {
-        const errorData = await response.json();
-        alert(`Error al añadir el libro: ${errorData.message || 'Error desconocido'}`);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error de conexión con el servidor');
-    }
-  };
-
-  return (
-    <div className="anadir-libros-container">
-      <h2>📖 Añadir Nuevo Libro</h2>
-      <form onSubmit={handleSubmit} className="form-libro">
-        <div className="form-group">
-          <label>Título:</label>
-          <input
-            type="text"
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
-            required
-            placeholder="Ingresa el título del libro"
-          />
-        </div>
-        <div className="form-group">
-          <label>Autor:</label>
-          <input
-            type="text"
-            value={autor}
-            onChange={(e) => setAutor(e.target.value)}
-            required
-            placeholder="Ingresa el autor"
-          />
-        </div>
-        <div className="form-group">
-          <label>ISBN:</label>
-          <input
-            type="text"
-            value={isbn}
-            onChange={(e) => setIsbn(e.target.value)}
-            placeholder="Ingresa el ISBN (opcional)"
-          />
-        </div>
-        <button type="submit" className="btn-submit">
-          Añadir Libro
-        </button>
-      </form>
-    </div>
-  );
-}

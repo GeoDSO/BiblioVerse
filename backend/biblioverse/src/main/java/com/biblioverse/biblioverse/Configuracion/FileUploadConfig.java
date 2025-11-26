@@ -1,24 +1,16 @@
 package com.biblioverse.biblioverse.Configuracion;
 
-import com.biblioverse.biblioverse.Servicios.LibreriaService;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Component
-public class DataInitializer implements CommandLineRunner {
-
-    private final LibreriaService libreriaService;
-
-    public DataInitializer(LibreriaService libreriaService) {
-        this.libreriaService = libreriaService;
-    }
+@Configuration
+public class FileUploadConfig implements WebMvcConfigurer {
 
     @Override
-    public void run(String... args) {
-        System.out.println("⏳ Importando libros desde Open Library...");
-        libreriaService.importarLibros("fantasy", 10); // puedes cambiar el tema
-        libreriaService.importarLibros("science", 10);
-        libreriaService.importarLibros("history", 10);
-        System.out.println("✅ Libros importados correctamente.");
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // Sirve archivos estáticos desde la carpeta uploads
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:uploads/");
     }
 }

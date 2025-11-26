@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,23 +54,33 @@ class LibroServiceTest {
     // ----------------- Test subirLibro -----------------
     @Test
     void subirLibro_exitoso() {
+        MockMultipartFile archivoPdf =
+                new MockMultipartFile("archivoPdf", "libro.pdf", "application/pdf", "PDF DATA".getBytes());
+
+        MockMultipartFile portada =
+                new MockMultipartFile("portada", "imagen.jpg", "image/jpeg", "IMG DATA".getBytes());
+
         Libro libro = new Libro();
         libro.setTitulo("Mi Libro");
         libro.setAutor("Geo");
         libro.setAgregador(usuario);
-        libro.setBiblioteca(biblioteca);
 
         Mockito.when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        Mockito.when(bibliotecaRepository.findById(1L)).thenReturn(Optional.of(biblioteca));
         Mockito.when(libroRepository.save(Mockito.any(Libro.class))).thenReturn(libro);
 
-        Libro resultado = libroService.subirLibro("Mi Libro", "Geo", 1L, 1L);
+        Libro resultado = libroService.subirLibro(
+                "Mi Libro",
+                "Geo",
+                "Descripción de prueba",
+                1L,
+                archivoPdf,
+                portada
+        );
 
         assertNotNull(resultado);
         assertEquals("Mi Libro", resultado.getTitulo());
         assertEquals("Geo", resultado.getAutor());
         assertEquals(usuario, resultado.getAgregador());
-        assertEquals(biblioteca, resultado.getBiblioteca());
     }
 
     // ----------------- Test listarLibros -----------------
@@ -90,7 +101,8 @@ class LibroServiceTest {
     @Test
     void buscarLibros_porTitulo() {
         List<Libro> libros = List.of(new Libro(), new Libro());
-        Mockito.when(libroRepository.findByTituloContainingIgnoreCase("Harry")).thenReturn(libros);
+        Mockito.when(libroRepository.findByTituloContainingIgnoreCase("Harry"))
+                .thenReturn(libros);
 
         List<Libro> resultado = libroService.buscarLibros("Harry", null);
 
@@ -100,7 +112,8 @@ class LibroServiceTest {
     @Test
     void buscarLibros_porAgregador() {
         List<Libro> libros = List.of(new Libro());
-        Mockito.when(libroRepository.findByAgregadorUsernameContaining("geo")).thenReturn(libros);
+        Mockito.when(libroRepository.findByAgregadorUsernameContaining("geo"))
+                .thenReturn(libros);
 
         List<Libro> resultado = libroService.buscarLibros(null, "geo");
 
@@ -110,7 +123,8 @@ class LibroServiceTest {
     @Test
     void buscarLibros_porTituloYAgregador() {
         List<Libro> libros = List.of(new Libro());
-        Mockito.when(libroRepository.findByTituloContainingIgnoreCaseAndAgregadorUsernameContaining("Harry", "geo"))
+        Mockito.when(libroRepository
+                        .findByTituloContainingIgnoreCaseAndAgregadorUsernameContaining("Harry", "geo"))
                 .thenReturn(libros);
 
         List<Libro> resultado = libroService.buscarLibros("Harry", "geo");
