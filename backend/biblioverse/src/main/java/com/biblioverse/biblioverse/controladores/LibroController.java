@@ -4,6 +4,7 @@ import com.biblioverse.biblioverse.Dtos.LibroDto;
 import com.biblioverse.biblioverse.Entidades.Libro;
 import com.biblioverse.biblioverse.Servicios.LibroService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.ResponseEntity;
@@ -66,4 +67,41 @@ public class LibroController {
             @RequestParam(required = false) String autor) {
         return libroService.buscarLibros(titulo, autor);
     }
+
+    @GetMapping("/portada/{id}")
+    public ResponseEntity<byte[]> obtenerPortada(@PathVariable Long id) {
+        try {
+            byte[] portada = libroService.obtenerPortada(id);
+
+            if (portada == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(portada);
+
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/pdf/{id}")
+    public ResponseEntity<byte[]> obtenerPDF(@PathVariable Long id) {
+        try {
+            byte[] pdf = libroService.obtenerPDF(id);
+
+            if (pdf == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(pdf);
+
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

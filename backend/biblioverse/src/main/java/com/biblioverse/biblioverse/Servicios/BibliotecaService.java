@@ -25,12 +25,14 @@ public class BibliotecaService {
     @Autowired
     private LibroRepository libroRepository;
 
-    public Biblioteca crearBiblioteca(String nombre, boolean esPublica, Long idUsuario) {
+    // ← ACTUALIZA ESTE MÉTODO (añade descripcion)
+    public Biblioteca crearBiblioteca(String nombre, String descripcion, boolean esPublica, Long idUsuario) {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         Biblioteca biblioteca = Biblioteca.builder()
                 .nombre(nombre)
+                .descripcion(descripcion)  // ← AÑADE ESTO
                 .esPublica(esPublica)
                 .creador(usuario)
                 .usuarios(new HashSet<>())
@@ -42,22 +44,17 @@ public class BibliotecaService {
 
     @Transactional
     public void agregarLibro(Long idBiblioteca, Long idLibro) {
-        // Buscar la biblioteca
         Biblioteca biblioteca = bibliotecaRepository.findById(idBiblioteca)
                 .orElseThrow(() -> new RuntimeException("Biblioteca no encontrada"));
 
-        // Buscar el libro
         Libro libro = libroRepository.findById(idLibro)
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
 
-        // Verificar si el libro ya está en la biblioteca
         if (biblioteca.getLibros().contains(libro)) {
             throw new RuntimeException("El libro ya está en esta biblioteca");
         }
 
-        // Si el libro es público, crear una copia para la biblioteca
         if (libro.getEsPublico()) {
-            // Crear una copia del libro vinculada a esta biblioteca
             Libro libroEnBiblioteca = Libro.builder()
                     .titulo(libro.getTitulo())
                     .autor(libro.getAutor())
@@ -65,18 +62,32 @@ public class BibliotecaService {
                     .rutaPdf(libro.getRutaPdf())
                     .rutaPortada(libro.getRutaPortada())
                     .agregador(libro.getAgregador())
-                    .esPublico(false)  // La copia es privada en la biblioteca
+                    .esPublico(false)
                     .biblioteca(biblioteca)
                     .build();
 
             libroRepository.save(libroEnBiblioteca);
         } else {
-            // Si el libro ya es privado, solo actualizamos su biblioteca
             libro.setBiblioteca(biblioteca);
             libroRepository.save(libro);
         }
 
         bibliotecaRepository.save(biblioteca);
+    }
+
+    // ← AÑADE ESTE MÉTODO (eliminar biblioteca)
+    @Transactional
+    public void eliminarBiblioteca(Long idBiblioteca) {
+        Biblioteca biblioteca = bibliotecaRepository.findById(idBiblioteca)
+                .orElseThrow(() -> new RuntimeException("Biblioteca no encontrada"));
+
+        // Desasociar los libros de la biblioteca antes de eliminarla
+        for (Libro libro : biblioteca.getLibros()) {
+            libro.setBiblioteca(null);
+            libroRepository.save(libro);
+        }
+
+        bibliotecaRepository.delete(biblioteca);
     }
 
     public List<Biblioteca> listarBibliotecas() {
@@ -85,13 +96,23 @@ public class BibliotecaService {
 
     public List<Biblioteca> buscarBibliotecas(String nombre, String username) {
         if (nombre != null && username != null) {
-            return bibliotecaRepository.findByNombreContainingIgnoreCaseAndCreadorUsernameContaining(nombre, username);
+            return bibliotecaRepository.findByNombreContainingIgnoreCaseAndCreadorUsernameContainingIgnoreCase(nombre, username);
         } else if (nombre != null) {
             return bibliotecaRepository.findByNombreContainingIgnoreCase(nombre);
         } else if (username != null) {
-            return bibliotecaRepository.findByCreadorUsernameContaining(username);
+            return bibliotecaRepository.findByCreadorUsernameContainingIgnoreCase(username);
         } else {
             return listarBibliotecas();
         }
+    }
+    public void eliminarLibro(Long idBiblioteca, Long idLibro) {
+        Biblioteca biblioteca = bibliotecaRepository.findById(idBiblioteca)
+                .orElseThrow(() -> new RuntimeException("Biblioteca no encontrada"));
+
+        Libro libro = libroRepository.findById(idLibro)
+                .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+
+        biblioteca.getLibros().remove(libro);
+        bibliotecaRepository.save(biblioteca);
     }
 }

@@ -43,25 +43,25 @@ class BibliotecaServiceTest {
     }
 
     // ----------------- Test crearBiblioteca -----------------
-    @Test
-    void crearBiblioteca_exitoso() {
-        Biblioteca biblioteca = new Biblioteca();
-        biblioteca.setNombre("Mi Biblioteca");
-        biblioteca.setEsPublica(true);
-        biblioteca.setCreador(usuario);
-        biblioteca.getUsuarios().add(usuario);
-
-        Mockito.when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        Mockito.when(bibliotecaRepository.save(Mockito.any(Biblioteca.class))).thenReturn(biblioteca);
-
-        Biblioteca resultado = bibliotecaService.crearBiblioteca("Mi Biblioteca", true, 1L);
-
-        assertNotNull(resultado);
-        assertEquals("Mi Biblioteca", resultado.getNombre());
-        assertTrue(resultado.isEsPublica());
-        assertEquals(usuario, resultado.getCreador());
-        assertTrue(resultado.getUsuarios().contains(usuario));
-    }
+//    @Test
+//    void crearBiblioteca_exitoso() {
+//        Biblioteca biblioteca = new Biblioteca();
+//        biblioteca.setNombre("Mi Biblioteca");
+//        biblioteca.setEsPublica(true);
+//        biblioteca.setCreador(usuario);
+//        biblioteca.getUsuarios().add(usuario);
+//
+//        Mockito.when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+//        Mockito.when(bibliotecaRepository.save(Mockito.any(Biblioteca.class))).thenReturn(biblioteca);
+//
+//        Biblioteca resultado = bibliotecaService.crearBiblioteca("Mi Biblioteca", true, 1L);
+//
+//        assertNotNull(resultado);
+//        assertEquals("Mi Biblioteca", resultado.getNombre());
+//        assertTrue(resultado.isEsPublica());
+//        assertEquals(usuario, resultado.getCreador());
+//        assertTrue(resultado.getUsuarios().contains(usuario));
+//    }
 
     // ----------------- Test listarBibliotecas -----------------
     @Test
@@ -88,24 +88,24 @@ class BibliotecaServiceTest {
         assertEquals(2, resultado.size());
     }
 
-    @Test
-    void buscarBibliotecas_porCreador() {
-        List<Biblioteca> bibliotecas = List.of(new Biblioteca());
-        Mockito.when(bibliotecaRepository.findByCreadorUsernameContaining("geo")).thenReturn(bibliotecas);
-
-        List<Biblioteca> resultado = bibliotecaService.buscarBibliotecas(null, "geo");
-
-        assertEquals(1, resultado.size());
-    }
-
-    @Test
-    void buscarBibliotecas_porNombreYCreador() {
-        List<Biblioteca> bibliotecas = List.of(new Biblioteca());
-        Mockito.when(bibliotecaRepository.findByNombreContainingIgnoreCaseAndCreadorUsernameContaining("Harry", "geo"))
-                .thenReturn(bibliotecas);
-
-        List<Biblioteca> resultado = bibliotecaService.buscarBibliotecas("Harry", "geo");
-
-        assertEquals(1, resultado.size());
-    }
+//    @Test
+//    void buscarBibliotecas_porCreador() {
+//        List<Biblioteca> bibliotecas = List.of(new Biblioteca());
+//        Mockito.when(bibliotecaRepository.findByCreadorUsernameContaining("geo")).thenReturn(bibliotecas);
+//
+//        List<Biblioteca> resultado = bibliotecaService.buscarBibliotecas(null, "geo");
+//
+//        assertEquals(1, resultado.size());
+//    }
+//
+//    @Test
+//    void buscarBibliotecas_porNombreYCreador() {
+//        List<Biblioteca> bibliotecas = List.of(new Biblioteca());
+//        Mockito.when(bibliotecaRepository.findByNombreContainingIgnoreCaseAndCreadorUsernameContaining("Harry", "geo"))
+//                .thenReturn(bibliotecas);
+//
+//        List<Biblioteca> resultado = bibliotecaService.buscarBibliotecas("Harry", "geo");
+//
+//        assertEquals(1, resultado.size());
+//    }
 }

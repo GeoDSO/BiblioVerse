@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/bibliotecas")
 public class BibliotecaController {
@@ -18,9 +19,9 @@ public class BibliotecaController {
 
     @PostMapping("/crear")
     public Biblioteca crearBiblioteca(@RequestBody BibliotecaDto bibliotecaDTO) {
-        // Crea la biblioteca y automáticamente asigna al usuario como creador
         return bibliotecaService.crearBiblioteca(
                 bibliotecaDTO.getNombre(),
+                bibliotecaDTO.getDescripcion(),  // ← AÑADE ESTO
                 bibliotecaDTO.getEsPublica(),
                 bibliotecaDTO.getIdUsuario()
         );
@@ -38,11 +39,21 @@ public class BibliotecaController {
         }
     }
 
+    // ← AÑADE ESTE ENDPOINT (eliminar biblioteca)
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<String> eliminarBiblioteca(@PathVariable Long id) {
+        try {
+            bibliotecaService.eliminarBiblioteca(id);
+            return ResponseEntity.ok("Biblioteca eliminada exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/buscar")
     public List<Biblioteca> buscarBibliotecas(
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String username) {
-        // Busca bibliotecas por nombre y/o por creador
         return bibliotecaService.buscarBibliotecas(nombre, username);
     }
 
@@ -50,4 +61,17 @@ public class BibliotecaController {
     public List<Biblioteca> listarBibliotecas() {
         return bibliotecaService.listarBibliotecas();
     }
+
+    @DeleteMapping("/{idBiblioteca}/eliminar-libro/{idLibro}")
+    public ResponseEntity<String> eliminarLibro(
+            @PathVariable Long idBiblioteca,
+            @PathVariable Long idLibro) {
+        try {
+            bibliotecaService.eliminarLibro(idBiblioteca, idLibro);
+            return ResponseEntity.ok("Libro eliminado de la biblioteca exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

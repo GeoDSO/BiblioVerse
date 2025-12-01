@@ -18,7 +18,7 @@ public class BibliotecaDto {
 
     @NotBlank(message = "El nombre de la biblioteca no puede estar vacío")
     private String nombre;
-
+    private String descripcion;
     @NotNull(message = "Debe especificar si la biblioteca es pública o no")
     private Boolean esPublica;
 

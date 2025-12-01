@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 function ExploradorLibros({ usuario }) {
-    console.log("Usuario recibido en Explorador:", usuario);
+  console.log("Usuario recibido en Explorador:", usuario);
   const [libros, setLibros] = useState([]);
   const [bibliotecas, setBibliotecas] = useState([]);
   const [libroSeleccionado, setLibroSeleccionado] = useState(null);
@@ -19,11 +19,27 @@ function ExploradorLibros({ usuario }) {
 
   const cargarLibros = async () => {
     try {
-      const response = await fetch(`http://localhost:8081/api/libros/visibles/${usuario.id}`);
+      // CAMBIO PRINCIPAL: Usar el endpoint correcto que carga TODOS los libros
+      const response = await fetch(`http://localhost:8081/api/libros/listar`);
       const data = await response.json();
-          console.log("📦 Datos recibidos de /visibles:", data);
+      console.log("📦 Datos recibidos de /listar:", data);
 
-      setLibros(data);
+      // Filtrar libros visibles para el usuario:
+      // - Libros públicos
+      // - Libros privados en bibliotecas del usuario
+      const librosVisibles = data.filter(libro => {
+        // Si es público, siempre visible
+        if (libro.esPublico) return true;
+        
+        // Si es privado, verificar si está en una biblioteca del usuario
+        if (libro.biblioteca) {
+          return libro.biblioteca.creador.id === usuario.id;
+        }
+        
+        return false;
+      });
+
+      setLibros(librosVisibles);
     } catch (error) {
       console.error('Error al cargar libros:', error);
     }
@@ -95,6 +111,14 @@ function ExploradorLibros({ usuario }) {
     libro.titulo.toLowerCase().includes(busqueda.toLowerCase()) ||
     libro.autor.toLowerCase().includes(busqueda.toLowerCase())
   );
+
+  // Determinar si el libro ya está en alguna biblioteca del usuario
+  const estaEnMiBiblioteca = (libro) => {
+    if (!libro.esPublico && libro.biblioteca) {
+      return libro.biblioteca.creador.id === usuario.id;
+    }
+    return false;
+  };
 
   return (
     <div style={styles.container}>
@@ -185,9 +209,9 @@ function ExploradorLibros({ usuario }) {
                   ➕ Agregar a biblioteca
                 </button>
               )}
-              {!libro.esPublico && (
+              {estaEnMiBiblioteca(libro) && (
                 <div style={styles.libroEnBiblioteca}>
-                  📚 Ya está en tu biblioteca
+                  📚 En tu biblioteca
                 </div>
               )}
             </div>

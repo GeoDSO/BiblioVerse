@@ -147,4 +147,42 @@ public class LibroService {
             return listarLibros();
         }
     }
+    // Agregar este método al final de la clase
+    public Libro obtenerLibroPorId(Long id) {
+        return libroRepository.findById(id).orElse(null);
+    }
+
+    // Y este método para obtener la portada como bytes
+    public byte[] obtenerPortada(Long id) throws IOException {
+        Libro libro = libroRepository.findById(id).orElse(null);
+
+        if (libro == null || libro.getRutaPortada() == null) {
+            return null;
+        }
+
+        // Leer el archivo de la ruta guardada
+        Path rutaArchivo = Paths.get(libro.getRutaPortada().substring(1)); // Quitar el "/" inicial
+        return Files.readAllBytes(rutaArchivo);
+    }
+
+    public byte[] obtenerPDF(Long id) throws IOException {
+        Libro libro = libroRepository.findById(id).orElse(null);
+
+        if (libro == null || libro.getRutaPdf() == null) {
+            return null;
+        }
+
+        // Leer el archivo de la ruta guardada
+        String rutaLimpia = libro.getRutaPdf().startsWith("/")
+                ? libro.getRutaPdf().substring(1)
+                : libro.getRutaPdf();
+
+        Path rutaArchivo = Paths.get(rutaLimpia);
+
+        if (!Files.exists(rutaArchivo)) {
+            return null;
+        }
+
+        return Files.readAllBytes(rutaArchivo);
+    }
 }

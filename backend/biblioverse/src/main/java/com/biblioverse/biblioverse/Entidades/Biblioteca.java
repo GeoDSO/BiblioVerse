@@ -25,7 +25,9 @@ public class Biblioteca {
     private Long id;
 
     private String nombre;
-    private boolean esPublica;
+    private String descripcion;
+
+    private Boolean esPublica;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")

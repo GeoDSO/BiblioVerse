@@ -8,6 +8,7 @@ import HomePage from './componentes/homepage.jsx';
 import LoginRegister from './componentes/loginregister.jsx';
 import AnadirLibro from './componentes/añadir-libro.jsx';
 import ExplorarPage from './componentes/explorador.jsx';
+import Bibliotecas from './componentes/bibliotecas.jsx';
 
 // Estilos globales
 import './app.css';
@@ -61,6 +62,9 @@ function App() {
       });
 
       const data = await response.json();
+
+      console.log("📥 Respuesta del login:", data);  // ← AÑADE ESTO
+      console.log("👤 Usuario guardado:", data.usuario);  // ← AÑADE ESTO
 
       if (response.ok) {
         // Guardamos usuario y pasamos a la pantalla HOME
@@ -133,8 +137,8 @@ function App() {
 
         {/* Lista de Bibliotecas */}
         {vistaActual === 'bibliotecas' && usuario && (
-          <ListaBiblioteca usuario={usuario} />
-        )}
+          <Bibliotecas usuario={usuario} />
+    )}
 
         {/* Añadir libro */}
         {vistaActual === 'añadir-libro' && usuario && (

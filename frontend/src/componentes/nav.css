@@ -8,7 +8,7 @@
   top: 0;
   z-index: 1000;
   transition: all 0.3s ease;
-  border-radius: 0 0 25px 25px;
+  border-radius:0 0 25px 25px;
   animation: navGlow 8s ease-in-out infinite;
 }
 
@@ -114,7 +114,7 @@
 
 .nav-menu li:hover {
   color: #fffaf3;
-  background: linear-gradient(135deg, #bb6a57 0%, #a57865 100%);
+  background: linear-gradient(135deg, #e3b789 0%, #bb9382 100%);
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(187, 106, 87, 0.25);
 }

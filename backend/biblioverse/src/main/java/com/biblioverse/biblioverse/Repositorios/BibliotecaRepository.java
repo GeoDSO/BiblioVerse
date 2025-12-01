@@ -1,5 +1,6 @@
 package com.biblioverse.biblioverse.Repositorios;
-import com.biblioverse.biblioverse.Entidades.*;
+
+import com.biblioverse.biblioverse.Entidades.Biblioteca;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,13 +11,12 @@ import java.util.List;
 @Repository
 public interface BibliotecaRepository extends JpaRepository<Biblioteca, Long> {
 
-    // Buscar bibliotecas por nombre (parcial y sin distinguir mayúsculas/minúsculas)
-    List<Biblioteca> findByNombreContainingIgnoreCase(String nombre);
+    @Query("SELECT b FROM Biblioteca b WHERE LOWER(b.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
+    List<Biblioteca> findByNombreContainingIgnoreCase(@Param("nombre") String nombre);
 
-    // Buscar bibliotecas por nombre y creador
-    List<Biblioteca> findByNombreContainingIgnoreCaseAndCreadorUsernameContaining(String nombre, String username);
+    @Query("SELECT b FROM Biblioteca b WHERE LOWER(b.creador.username) LIKE LOWER(CONCAT('%', :username, '%'))")
+    List<Biblioteca> findByCreadorUsernameContainingIgnoreCase(@Param("username") String username);
 
-    // Buscar bibliotecas por creador solamente
-    List<Biblioteca> findByCreadorUsernameContaining(String username);
+    @Query("SELECT b FROM Biblioteca b WHERE LOWER(b.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')) AND LOWER(b.creador.username) LIKE LOWER(CONCAT('%', :username, '%'))")
+    List<Biblioteca> findByNombreContainingIgnoreCaseAndCreadorUsernameContainingIgnoreCase(@Param("nombre") String nombre, @Param("username") String username);
 }
-

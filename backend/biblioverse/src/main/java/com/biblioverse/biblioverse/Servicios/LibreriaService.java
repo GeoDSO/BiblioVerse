@@ -15,7 +15,7 @@ public class LibreriaService {
     private static final String API_URL = "https://openlibrary.org/search.json?q=";
 
     @Autowired
-    private LibroRepository libroRepo;
+    private LibroRepository libroRepository;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -35,7 +35,7 @@ public class LibreriaService {
                         .titulo(titulo)
                         .autor(autores.get(0))
                         .build();
-                libroRepo.save(libro);
+                libroRepository.save(libro);
             }
         }
     }
