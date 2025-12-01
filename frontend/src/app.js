@@ -18,6 +18,7 @@ import './app.css';
 
 function App() {
 
+    const [isSignUp, setIsSignUp] = useState(false);
   // vistaActual controla qué pantalla se muestra (login/home/etc)
   const [vistaActual, setVistaActual] = useState('login');
 
@@ -37,6 +38,13 @@ function App() {
   // -------------------------------------------------------
   const handleNavigate = (vista) => {
     setVistaActual(vista);
+    if(vista === 'register'){
+      setIsSignUp(true);
+    }else if (vista === 'login'){
+      setIsSignUp(false);
+    }else{
+      setIsSignUp(false)
+    }
   };
 
   // -------------------------------------------------------
@@ -97,9 +105,8 @@ function App() {
   //   RENDER DE LA APLICACIÓN
   // =======================================================
   return (
-    <div className="App">
+    <div className={`App ${isSignUp ? "night" : "day"}`}>
 
-      {/* Barra de navegación superior */}
       <Nav
         usuario={usuario}
         onLogout={handleLogout}
@@ -107,13 +114,15 @@ function App() {
       />
 
       {/* Contenedor principal */}
-      <main className={`main ${vistaActual === 'login' ? 'modo-login' : ''}`}>
+      <main className={`main ${vistaActual === 'login'|| vistaActual === 'register' ? 'modo-login' : ''}`}>
 
         {/* Pantalla LOGIN / REGISTRO */}
-        {vistaActual === 'login' && (
+        {(vistaActual === 'login' || vistaActual === 'register') && (
           <LoginRegister
             onLogin={handleLogin}
             onRegister={handleRegister}
+            setIsSignUp={setIsSignUp}
+            isSignUpGlobal={isSignUp}
           />
         )}
 

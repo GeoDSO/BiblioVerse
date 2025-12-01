@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./login.css";
 
-export default function LoginRegister({ onLogin, onRegister }) {
-  const [isSignUp, setIsSignUp] = useState(false);
-
+export default function LoginRegister({ onLogin, onRegister, setIsSignUp, isSignUpGlobal }) {
+  //const [isSignUp, setIsSignUp] = useState(false);
+  const isSignUp = isSignUpGlobal; // Renombrar para usar el nombre que tenías antes
   // Estados para LOGIN
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
