@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './añadir-libro.css';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8081';
 
 function AnadirLibro({ usuario }) {
   const [formData, setFormData] = useState({
@@ -24,7 +25,7 @@ function AnadirLibro({ usuario }) {
 
   const cargarBibliotecas = async () => {
     try {
-      const response = await fetch('http://localhost:8081/api/bibliotecas/listar');
+      const response = await fetch(`${API_URL}/api/bibliotecas/listar`);
       const data = await response.json();
       // Filtrar solo las del usuario actual
       const misBibliotecas = data.filter(b => b.creador.id === usuario.id);
@@ -134,9 +135,9 @@ function AnadirLibro({ usuario }) {
       if (archivoPDF) datos.append('archivoPdf', archivoPDF);
       if (portada) datos.append('portada', portada);
 
-      const response = await fetch('http://localhost:8081/api/libros/subir', {
+      const response = await fetch(`${API_URL}/api/libros/subir`, {
         method: 'POST',
-        body: datos
+        body: formData
       });
 
       if (response.ok) {
@@ -158,6 +159,8 @@ function AnadirLibro({ usuario }) {
   };
 
   return (
+    <div className="page-wrapper day">
+      <div className="page-content">
     <div className="anadir-libros-container">
       <header className="header-anadir">
         <h1>AGREGAR <span>NUEVO LIBRO</span></h1>
@@ -302,6 +305,8 @@ function AnadirLibro({ usuario }) {
           {cargando ? 'Agregando...' : 'Agregar Libro'}
         </button>
       </form>
+    </div>
+      </div>
     </div>
   );
 }

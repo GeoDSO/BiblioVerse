@@ -1,8 +1,22 @@
 /* Fondo general con el mismo estilo acogedor */
 .anadir-libros-container {
-  min-height: 100vh;
-  width: 100%;
-  padding: 2rem;
+ width: 100%;
+    max-width: 100vw;
+    min-height: 100vh;
+    background: #f5ede3;
+    padding: 2rem;
+    border-radius: 25px;
+    box-shadow: inset 0 0 30px rgba(167, 120, 101, 0.05);
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    min-height: 100vh;
+    /* display: flex; */
+    /* align-items: center; */
+    /* justify-content: center; */
+    padding: 2rem;
+    overflow-y: scroll;
+    overflow-x: scroll;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,6 +27,7 @@
     #f5ede3 75%,
     #fffdf9 100%);
   animation: dayGradient 15s ease infinite;
+  gap: 5vh;
 }
 
 /* Card con glassmorphism siguiendo el estilo */
@@ -30,6 +45,7 @@
   position: relative;
   border: 2px solid rgba(233, 210, 169, 0.3);
   animation: fadeIn 0.6s ease forwards;
+  margin-top: 70vh;
 }
 
 /* Título con brillo suave */

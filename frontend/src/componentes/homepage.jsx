@@ -65,6 +65,8 @@ useEffect(() => {
   };
 
   return (
+    <div className="page-wrapper day">
+      <div className="page-content">
     <div className="homepage-container">
       <header className="header-libros">
         <img
@@ -104,6 +106,8 @@ useEffect(() => {
           onClose={() => setLibroSeleccionado(null)}
         />
       )}
+    </div>
+      </div>
     </div>
   );
 }

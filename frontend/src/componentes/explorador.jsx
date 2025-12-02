@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8081';
 
 function ExploradorLibros({ usuario }) {
   console.log("Usuario recibido en Explorador:", usuario);
@@ -20,7 +21,7 @@ function ExploradorLibros({ usuario }) {
   const cargarLibros = async () => {
     try {
       // CAMBIO PRINCIPAL: Usar el endpoint correcto que carga TODOS los libros
-      const response = await fetch(`http://localhost:8081/api/libros/listar`);
+      const response = await fetch(`${API_URL}/api/libros/listar`);
       const data = await response.json();
       console.log("📦 Datos recibidos de /listar:", data);
 
@@ -47,7 +48,7 @@ function ExploradorLibros({ usuario }) {
 
   const cargarBibliotecas = async () => {
     try {
-      const response = await fetch('http://localhost:8081/api/bibliotecas/listar');
+      const response = await fetch(`${API_URL}/api/bibliotecas/listar`);
       const data = await response.json();
       const misBibliotecas = data.filter(b => b.creador.id === usuario.id);
       setBibliotecas(misBibliotecas);
@@ -85,7 +86,7 @@ function ExploradorLibros({ usuario }) {
     setCargando(true);
     try {
       const response = await fetch(
-        `http://localhost:8081/api/bibliotecas/${bibliotecaSeleccionada}/agregar-libro/${libroSeleccionado.id}`,
+        `${API_URL}/api/bibliotecas/${bibliotecaSeleccionada}/agregar-libro/${libroSeleccionado.id}`,
         { method: 'POST' }
       );
 
@@ -121,6 +122,8 @@ function ExploradorLibros({ usuario }) {
   };
 
   return (
+    <div className="page-wrapper day">
+      <div className="page-content">
     <div style={styles.container}>
       <header style={styles.header}>
         <h1 style={styles.titulo}>
@@ -162,7 +165,7 @@ function ExploradorLibros({ usuario }) {
             <div style={styles.portadaContainer}>
               {libro.rutaPortada ? (
                 <img
-                  src={`http://localhost:8081${libro.rutaPortada}`}
+                  src={`${API_URL}${libro.rutaPortada}`}
                   alt={libro.titulo}
                   style={styles.portada}
                 />
@@ -286,7 +289,7 @@ function ExploradorLibros({ usuario }) {
               
               {libroSeleccionado.rutaPdf && (
                 <a
-                  href={`http://localhost:8081${libroSeleccionado.rutaPdf}`}
+                  href={`${API_URL}${libroSeleccionado.rutaPdf}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={styles.btnLeer}
@@ -378,13 +381,13 @@ function ExploradorLibros({ usuario }) {
         </div>
       )}
     </div>
+      </div>
+    </div>
   );
 }
 
 const styles = {
   container: {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     padding: '40px 20px',
   },
   header: {

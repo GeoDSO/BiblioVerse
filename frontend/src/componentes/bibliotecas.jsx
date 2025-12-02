@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './bibliotecas.css';
-import LectorLibro from './lectorlibro'; // ← Importar el lector
+import LectorLibro from './lectorlibro';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8081';
 
 function Bibliotecas({ usuario }) {
   const [Bibliotecas, setBibliotecas] = useState([]);
@@ -20,7 +21,7 @@ function Bibliotecas({ usuario }) {
 
   const cargarBibliotecas = async () => {
     try {
-      const response = await fetch('http://localhost:8081/api/bibliotecas/listar');
+      const response = await fetch(`${API_URL}/api/bibliotecas/listar`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -67,7 +68,7 @@ function Bibliotecas({ usuario }) {
     }
 
     try {
-      const response = await fetch(`http://localhost:8081/api/bibliotecas/eliminar/${id}`, {
+      const response = await fetch(`${API_URL}/api/bibliotecas/eliminar/${id}`, {
         method: 'DELETE'
       });
 
@@ -93,7 +94,7 @@ function Bibliotecas({ usuario }) {
 
     try {
       const response = await fetch(
-        `http://localhost:8081/api/bibliotecas/${idBiblioteca}/eliminar-libro/${idLibro}`,
+        `${API_URL}/api/bibliotecas/${idBiblioteca}/eliminar-libro/${idLibro}`,
         { method: 'DELETE' }
       );
 
@@ -125,7 +126,8 @@ function Bibliotecas({ usuario }) {
   };
 
   return (
-    <>
+    <div className="page-wrapper day">
+      <div className="page-content">
       <div className="bibliotecas-container">
         {Bibliotecas.length === 0 && (
           <p style={{gridColumn: '1 / -1', textAlign: 'center', color: '#7b5747', fontSize: '1.1rem'}}>
@@ -153,7 +155,7 @@ function Bibliotecas({ usuario }) {
                 biblioteca.libros.slice(0, 6).map((libro) => (
                   <div key={libro.id} className="libro-mini-wrapper">
                     <img 
-                      src={`http://localhost:8081/api/libros/portada/${libro.id}`}
+                      src={`${API_URL}/api/libros/portada/${libro.id}`}
                       alt={libro.titulo}
                       className="mini-portada"
                       onError={(e) => handleImageError(e, libro.id)}
@@ -230,7 +232,7 @@ function Bibliotecas({ usuario }) {
                       </button>
                       <div className="libro-grande-portada-wrapper">
                         <img 
-                          src={`http://localhost:8081/api/libros/portada/${libro.id}`}
+                          src={`${API_URL}/api/libros/portada/${libro.id}`}
                           alt={libro.titulo}
                           onError={(e) => handleImageError(e, libro.id)}
                         />
@@ -255,11 +257,12 @@ function Bibliotecas({ usuario }) {
       {/* ← NUEVO: LECTOR DE PDF */}
       {libroAbierto && (
         <LectorLibro 
-          url={`http://localhost:8081/api/libros/pdf/${libroAbierto.id}`}
+          url={`${API_URL}/api/libros/pdf/${libroAbierto.id}`}
           onClose={cerrarLibro}
         />
       )}
-    </>
+      </div>
+    </div>
   );
 }
 
