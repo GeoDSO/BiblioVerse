@@ -1,5 +1,5 @@
 .homepage-container {
-  width: 100%;
+    width: 100%;
     max-width: 100vw;
     min-height: 100vh;
     background: #f5ede3;
@@ -21,17 +21,21 @@
 }
 
 .header-libros {
+  margin-top: 10rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 3rem;
   margin-bottom: 3rem;
-  max-width: 100%;
+  max-width: 73%;
+  margin-right: auto;
+  margin-left: auto;
+
 }
 
 .principito {
-  width: 340px;
-  height: 340px;
+  width: 450px;
+  height: 450px;
   object-fit: contain;
   flex-shrink: 0;
   order: 2;
@@ -52,7 +56,7 @@
 }
 
 .header-texto h1 {
-  font-size: 2.6rem;
+  font-size: 4.5rem;
   font-weight: 700;
   color: #7b5747;
   margin-bottom: 0.5rem;
@@ -64,7 +68,7 @@
 }
 
 .header-texto p {
-  font-size: 1.1rem;
+  font-size: 1.75rem;
   color: #a57865;
   margin: 0;
 }

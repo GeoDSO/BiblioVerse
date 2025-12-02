@@ -1,49 +1,80 @@
 /* Grid de bibliotecas */
 .bibliotecas-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
-  max-width: 1400px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
+  padding: 2.5rem;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1400px) {
   .bibliotecas-container {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
 .biblioteca-card {
-  background: linear-gradient(to bottom, #7b5747 0%, #7b5747 50px, #fffdf9 50px);
-  border-radius: 16px;
+  background: linear-gradient(to bottom, #7b5747 0%, #7b5747 70px, #fffdf9 70px);
+  border-radius: 20px;
   padding: 0;
-  box-shadow: 0 4px 12px rgba(123, 87, 71, 0.15);
+  box-shadow: 0 6px 16px rgba(123, 87, 71, 0.18);
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
   border: 2px solid #5d3f32;
+  min-height: 380px;
 }
 
 .biblioteca-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 20px rgba(187, 106, 87, 0.25);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(187, 106, 87, 0.3);
+}
+
+/* Tarjeta para CREAR nueva biblioteca */
+.biblioteca-card-crear {
+  background: linear-gradient(135deg, rgba(123, 87, 71, 0.05) 0%, rgba(187, 106, 87, 0.05) 100%);
+  border: 3px dashed #bb6a57;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.biblioteca-card-crear:hover {
+  background: linear-gradient(135deg, rgba(123, 87, 71, 0.1) 0%, rgba(187, 106, 87, 0.1) 100%);
+  border-color: #7b5747;
+}
+
+.biblioteca-card-crear .icono-crear {
+  font-size: 4rem;
+  color: #bb6a57;
+}
+
+.biblioteca-card-crear h3 {
+  font-size: 1.5rem;
+  color: #7b5747;
+  margin: 0;
+  font-weight: 600;
 }
 
 /* Header - Parte superior de madera */
 .biblioteca-header {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 1rem 1.2rem;
+  gap: 1rem;
+  padding: 1.3rem 1.5rem;
 }
 
 .biblioteca-header .icono {
-  font-size: 1.3rem;
+  font-size: 2.5rem;
 }
 
 .biblioteca-header h3 {
-  font-size: 1.1rem;
+  font-size: 2rem;
   color: #fffdf9;
   margin: 0;
   font-weight: 600;
@@ -51,38 +82,38 @@
 }
 
 .biblioteca-descripcion {
-  font-size: 0.88rem;
+  font-size: 2rem;
   color: #a57865;
   margin: 0;
-  padding: 0 1.2rem 0.5rem;
-  line-height: 1.4;
+  padding: 1.5rem 2rem 1.5rem;
+  line-height: 1.5;
 }
 
 /* ESTANTERÍA DE LIBROS */
 .mini-estanteria {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 0.4rem;
-  min-height: 120px;
-  padding: 1rem;
-  margin: 0.5rem 1rem;
-  border-radius: 8px;
+  gap: 0.5rem;
+  min-height: 150px;
+  padding: 1.2rem;
+  margin: 0.8rem 1.2rem;
+  border-radius: 10px;
   background: #f7efe7;
   border: 1px solid #d4bba8;
 }
 
 .libro-mini-wrapper {
-  width: 100%;
-  height: 60px;
+  width: 50px;
+  height: 100%;
   position: relative;
 }
 
 .mini-portada {
   width: 100%;
-  height: 60px;
+  height: 75px;
   object-fit: cover;
-  border-radius: 3px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  border-radius: 4px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.18);
   border: 1px solid #d4bba8;
   transition: transform 0.25s ease;
   display: block;
@@ -90,15 +121,15 @@
 
 .libro-placeholder {
   width: 100%;
-  height: 60px;
-  border-radius: 3px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  height: 75px;
+  border-radius: 4px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.18);
   border: 1px solid rgba(0,0,0,0.1);
   transition: transform 0.25s ease;
   display: none;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: rgba(0,0,0,0.15);
 }
@@ -118,16 +149,16 @@
 
 .biblioteca-card:hover .mini-portada,
 .biblioteca-card:hover .libro-placeholder {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
 }
 
 .sin-libros-mini {
   grid-column: 1 / -1;
   color: #bb6a57;
-  font-size: 0.9rem;
+  font-size: 1rem;
   opacity: 0.7;
   text-align: center;
-  padding: 1.5rem;
+  padding: 2rem;
 }
 
 /* Footer */
@@ -135,17 +166,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.8rem 1.2rem 1rem;
+  padding: 1rem 1.5rem 1.2rem;
 }
 
 .badge-publica, .badge-privada {
-  padding: 5px 12px;
-  border-radius: 12px;
-  font-size: 0.72rem;
+  padding: 6px 14px;
+  border-radius: 14px;
+  font-size: 1rem;
   font-weight: 600;
   color: white;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
 }
 
 .badge-publica {
@@ -157,12 +188,12 @@
 }
 
 .cantidad {
-  font-size: 0.9rem;
+  font-size: 2rem;
   color: #7b5747;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.4rem;
 }
 
 /* VISTA EXPANDIDA DE BIBLIOTECA */
@@ -188,9 +219,9 @@
 
 .biblioteca-expandida-contenido {
   background: #fffdf9;
-  border-radius: 16px;
+  border-radius: 20px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1300px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -210,7 +241,7 @@
 
 .biblioteca-expandida-header {
   background: linear-gradient(135deg, #7b5747 0%, #5d3f32 100%);
-  padding: 2rem;
+  padding: 2.5rem;
   color: white;
   position: sticky;
   top: 0;
@@ -222,19 +253,19 @@
 
 .biblioteca-expandida-header h2 {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 2rem;
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 1rem;
 }
 
 .btn-cerrar {
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
-  font-size: 1.5rem;
-  width: 40px;
-  height: 40px;
+  font-size: 2rem;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -249,74 +280,79 @@
 }
 
 .biblioteca-expandida-body {
-  padding: 2rem;
+  padding: 2.5rem;
 }
 
 .biblioteca-expandida-info {
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
   border-bottom: 2px solid #f2e7dd;
 }
 
 .biblioteca-expandida-info p {
   color: #7b5747;
-  font-size: 1rem;
-  margin: 0.5rem 0;
+  font-size: 1.5rem;
+  margin: 0.7rem 0;
 }
 
 /* ESTANTERÍA GRANDE */
 .estanteria-grande {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 1.5rem;
-  padding: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
   background: #f7efe7;
-  border-radius: 12px;
+  border-radius: 16px;
   border: 2px solid #d4bba8;
 }
 
 .libro-grande {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.7rem;
   transition: transform 0.3s ease;
   position: relative;
+  cursor: pointer;
 }
 
 .libro-grande:hover {
-  transform: translateY(-8px);
+  transform: translateY(-10px);
 }
 
 .libro-grande:hover .btn-eliminar-libro {
   opacity: 1;
 }
 
+.libro-grande:hover .libro-grande-titulo {
+  color: #bb6a57;
+}
+
 .libro-grande-portada-wrapper {
   width: 100%;
-  height: 200px;
+  height: 230px;
   position: relative;
 }
 
 .libro-grande img {
   width: 100%;
-  height: 200px;
+  height: 230px;
   object-fit: cover;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
   border: 2px solid #d4bba8;
   display: block;
 }
 
 .libro-placeholder-grande {
   width: 100%;
-  height: 200px;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  height: 230px;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
   border: 2px solid #d4bba8;
   display: none;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
+  font-size: 4rem;
   font-weight: 600;
   color: rgba(0,0,0,0.12);
 }
@@ -335,70 +371,233 @@
 .libro-placeholder-grande.color-8 { background: linear-gradient(135deg, #f5e6d6 0%, #e6d4b8 100%); }
 
 .libro-grande-titulo {
-  font-size: 0.9rem;
+  font-size: 1.5rem;
   color: #7b5747;
   font-weight: 600;
   text-align: center;
-  line-height: 1.3;
+  line-height: 1.4;
+  transition: color 0.2s ease;
 }
 
 .btn-eliminar-libro {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 10px;
+  right: 10px;
   background: rgba(187, 106, 87, 0.95);
   color: white;
   border: none;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
   z-index: 5;
 }
 
 .btn-eliminar-libro:hover {
   background: #a55a47;
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 .sin-libros-grande {
   grid-column: 1 / -1;
   text-align: center;
-  padding: 3rem;
+  padding: 4rem;
   color: #bb6a57;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
 }
 
 .btn-eliminar {
   background: #bb6a57;
   color: white;
   border: none;
-  padding: 0.7rem 1.5rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  padding: 0.8rem 1.8rem;
+  border-radius: 10px;
+  font-size: 1.5rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 1rem;
+  margin-top: 1.2rem;
 }
 
 .btn-eliminar:hover {
   background: #a55a47;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(187, 106, 87, 0.3);
+  box-shadow: 0 6px 12px rgba(187, 106, 87, 0.35);
 }
 
-.libro-grande {
+/* MODAL CREAR BIBLIOTECA */
+.modal-crear-biblioteca {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-crear-contenido {
+  background: #fffdf9;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 600px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+.modal-crear-contenido h2 {
+  margin: 0 0 1.5rem 0;
+  color: #7b5747;
+  font-size: 1.8rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #7b5747;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #d4bba8;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #bb6a57;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.visibilidad-opciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.opcion-visibilidad {
+  padding: 1.2rem;
+  border: 2px solid #d4bba8;
+  border-radius: 12px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
 }
 
-.libro-grande:hover .libro-grande-titulo {
-  color: #bb6a57;
+.opcion-visibilidad:hover {
+  border-color: #bb6a57;
+  background: rgba(187, 106, 87, 0.05);
+}
+
+.opcion-visibilidad.activa {
+  border-color: #bb6a57;
+  background: rgba(187, 106, 87, 0.1);
+}
+
+.opcion-visibilidad .icono-opcion {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.opcion-visibilidad h3 {
+  margin: 0.5rem 0;
+  color: #7b5747;
+  font-size: 1.1rem;
+}
+
+.opcion-visibilidad p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #a57865;
+}
+
+.modal-botones {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-modal {
+  flex: 1;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancelar {
+  background: #e8ddd3;
+  color: #7b5747;
+}
+
+.btn-cancelar:hover {
+  background: #d4bba8;
+}
+
+.btn-crear {
+  background: #bb6a57;
+  color: white;
+}
+
+.btn-crear:hover {
+  background: #a55a47;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(187, 106, 87, 0.3);
+}
+
+.btn-crear:disabled {
+  background: #d4bba8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.mensaje-error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.mensaje-exito {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
 }
