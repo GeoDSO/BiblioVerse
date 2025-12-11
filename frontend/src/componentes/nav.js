@@ -12,9 +12,9 @@ function Nav({ usuario, onLogout, onNavigate }) {
           {usuario ? (
             <>
               <li onClick={() => onNavigate('home')}>Inicio</li>
-              <li onClick={() => onNavigate('bibliotecas')}>Mis Bibliotecas</li>
               <li onClick={() => onNavigate('explorador')}>Explorar</li>
               <li onClick={() => onNavigate('añadir-libro')}>Añadir Libros</li>
+              <li onClick={() => onNavigate('perfilpage')}>Perfil</li>
               <li className="nav-user">
                 <span>👤 {usuario.username}</span>
                 <button onClick={onLogout} className="btn-logout">

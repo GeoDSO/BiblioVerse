@@ -34,6 +34,8 @@ function Bibliotecas({ usuario }) {
       }
       
       const data = await response.json();
+      console.log("JSON completo:", JSON.stringify(data, null, 2)); 
+      console.log("Descripción de la primera biblioteca:", data[0]?.descripcion);
       
       if (Array.isArray(data)) {
         const misBibliotecas = data.filter(b => b.creador && b.creador.id === usuario.id);
@@ -213,7 +215,7 @@ function Bibliotecas({ usuario }) {
               </div>
 
               <p className="biblioteca-descripcion">
-                {biblioteca.descripcion || 'Sin descripción'}
+                {biblioteca.descripcion|| 'Sin descripción'}
               </p>
 
               <div className="mini-estanteria">

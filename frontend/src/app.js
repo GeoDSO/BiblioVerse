@@ -9,8 +9,8 @@ import LoginRegister from './componentes/loginregister.jsx';
 import AnadirLibro from './componentes/añadir-libro.jsx';
 import ExplorarPage from './componentes/explorador.jsx';
 import Bibliotecas from './componentes/bibliotecas.jsx';
+import PerfilPage from './componentes/perfilUsuario.jsx';
 
-// Estilos globales
 import './app.css';
 
 // =======================================================
@@ -26,6 +26,8 @@ function App() {
   // usuario contiene información del usuario logueado
   const [usuario, setUsuario] = useState(null);
 
+
+  
   // -------------------------------------------------------
   //   Cerrar sesión
   // -------------------------------------------------------
@@ -148,6 +150,11 @@ function App() {
         {vistaActual === 'explorador' && usuario && (
   <ExplorarPage usuario={usuario} />
 )}
+
+    {vistaActual === 'perfilpage' && usuario && ( 
+              <PerfilPage usuario={usuario} /> // <<< AÑADE ESTO
+            )}
+
       </main>
 
     </div>

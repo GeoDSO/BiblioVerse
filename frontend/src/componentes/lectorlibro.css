@@ -10,6 +10,7 @@
 }
 
 .modal-content {
+  margin-top: 70px;
   position: relative;
   width: 90%;
   height: 90%;
@@ -48,13 +49,73 @@
   box-shadow: 0 4px 12px rgba(165, 120, 101, 0.25);
 }
 
+/* Controles de zoom */
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  padding: 8px 16px;
+  background: rgba(165, 120, 101, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(167, 120, 101, 0.1);
+}
+
+.zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  background: #a57865;
+  color: #f5ede3;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 40px;
+  height: 36px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.zoom-btn:hover:not(:disabled) {
+  background: #bb6a57;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(187, 106, 87, 0.2);
+}
+
+.zoom-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.zoom-btn.reset-btn {
+  background: rgba(165, 120, 101, 0.2);
+  color: #7b5747;
+  font-size: 1.3rem;
+}
+
+.zoom-btn.reset-btn:hover:not(:disabled) {
+  background: rgba(165, 120, 101, 0.3);
+  color: #7b5747;
+}
+
+.zoom-indicator {
+  color: #7b5747;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-width: 55px;
+  text-align: center;
+  user-select: none;
+}
+
 .pages-container {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .book-pages {
@@ -62,6 +123,7 @@
   justify-content: center;
   align-items: center;
   gap: 25px;
+  transition: transform 0.3s ease;
 }
 
 .controls {
@@ -88,6 +150,12 @@
   background: #bb6a57;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(187, 106, 87, 0.2);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .page-counter {

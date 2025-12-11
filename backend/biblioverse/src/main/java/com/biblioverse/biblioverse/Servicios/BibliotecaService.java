@@ -105,7 +105,9 @@ public class BibliotecaService {
             return listarBibliotecas();
         }
     }
+    @Transactional
     public void eliminarLibro(Long idBiblioteca, Long idLibro) {
+
         Biblioteca biblioteca = bibliotecaRepository.findById(idBiblioteca)
                 .orElseThrow(() -> new RuntimeException("Biblioteca no encontrada"));
 
@@ -113,6 +115,10 @@ public class BibliotecaService {
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
 
         biblioteca.getLibros().remove(libro);
+
+        libro.setBiblioteca(null);
+
+        libroRepository.save(libro);
         bibliotecaRepository.save(biblioteca);
     }
 }

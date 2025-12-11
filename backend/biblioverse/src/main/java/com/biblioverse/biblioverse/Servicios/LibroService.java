@@ -9,6 +9,7 @@ import com.biblioverse.biblioverse.Repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional; // <-- IMPORTANTE: NUEVO IMPORT
 
 import java.io.File;
 import java.io.IOException;
@@ -184,5 +185,47 @@ public class LibroService {
         }
 
         return Files.readAllBytes(rutaArchivo);
+    }
+
+    /**
+     * Elimina un libro por ID, incluyendo sus archivos físicos (PDF y Portada).
+     */
+    @Transactional
+    public void eliminarLibro(Long id) {
+        Libro libro = libroRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
+
+        // 1. Obtener y eliminar archivos físicos
+        eliminarArchivo(libro.getRutaPdf());
+        eliminarArchivo(libro.getRutaPortada());
+
+        // 2. Eliminar de la base de datos
+        libroRepository.delete(libro);
+    }
+
+    /**
+     * Método auxiliar para eliminar un archivo si su ruta no es nula ni vacía.
+     */
+    public void eliminarArchivo(String rutaRelativa) {
+        if (rutaRelativa != null && !rutaRelativa.isEmpty()) {
+            try {
+                // La ruta guardada incluye un '/' inicial (ej: /uploads/pdfs/...)
+                String rutaLimpia = rutaRelativa.startsWith("/")
+                        ? rutaRelativa.substring(1) // Quitar el '/' inicial
+                        : rutaRelativa;
+
+                Path rutaArchivo = Paths.get(rutaLimpia);
+
+                if (Files.exists(rutaArchivo)) {
+                    Files.delete(rutaArchivo);
+                    System.out.println("Archivo eliminado: " + rutaArchivo.toString());
+                } else {
+                    System.out.println("Advertencia: Archivo no encontrado para eliminar: " + rutaArchivo.toString());
+                }
+            } catch (IOException e) {
+                // Se lanza excepción para que la transacción falle si no se puede eliminar el archivo
+                throw new RuntimeException("Error al eliminar el archivo: " + rutaRelativa + ". Causa: " + e.getMessage());
+            }
+        }
     }
 }

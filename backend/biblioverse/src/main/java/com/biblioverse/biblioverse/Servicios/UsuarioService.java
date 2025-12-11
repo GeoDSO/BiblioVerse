@@ -7,6 +7,7 @@ import com.biblioverse.biblioverse.Entidades.Usuario;
 import com.biblioverse.biblioverse.Repositorios.BibliotecaRepository;
 import com.biblioverse.biblioverse.Repositorios.LibroRepository;
 import com.biblioverse.biblioverse.Repositorios.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -61,5 +62,79 @@ public class UsuarioService {
         Biblioteca biblioteca = libro.getBiblioteca();
         biblioteca.getUsuarios().add(usuario);
         bibliotecaRepository.save(biblioteca);
+    }
+
+    @Transactional
+    public void seguirUsuario(Long seguidorId, Long seguidoId) {
+        if (seguidorId.equals(seguidoId)) {
+            throw new RuntimeException("No puedes seguirte a ti mismo");
+        }
+
+        Usuario seguidor = usuarioRepository.findById(seguidorId)
+                .orElseThrow(() -> new RuntimeException("Usuario seguidor no encontrado"));
+
+        Usuario seguido = usuarioRepository.findById(seguidoId)
+                .orElseThrow(() -> new RuntimeException("Usuario seguido no encontrado"));
+
+        if (seguidor.getSeguidos().contains(seguido)) {
+            throw new RuntimeException("Ya estás siguiendo a este usuario");
+        }
+
+        seguidor.getSeguidos().add(seguido);
+        // La relación bidireccional se gestiona automáticamente por JPA/Hibernate
+
+        usuarioRepository.save(seguidor);
+    }
+
+    @Transactional
+    public void dejarDeSeguirUsuario(Long seguidorId, Long seguidoId) {
+        Usuario seguidor = usuarioRepository.findById(seguidorId)
+                .orElseThrow(() -> new RuntimeException("Usuario seguidor no encontrado"));
+
+        Usuario seguido = usuarioRepository.findById(seguidoId)
+                .orElseThrow(() -> new RuntimeException("Usuario seguido no encontrado"));
+
+        if (!seguidor.getSeguidos().contains(seguido)) {
+            throw new RuntimeException("No estás siguiendo a este usuario");
+        }
+
+        seguidor.getSeguidos().remove(seguido);
+
+        usuarioRepository.save(seguidor);
+    }
+
+    @Transactional
+    public void seguirBiblioteca(Long usuarioId, Long bibliotecaId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Biblioteca biblioteca = bibliotecaRepository.findById(bibliotecaId)
+                .orElseThrow(() -> new RuntimeException("Biblioteca no encontrada"));
+
+        if (usuario.getBibliotecasSeguidas().contains(biblioteca)) {
+            throw new RuntimeException("Ya estás siguiendo esta biblioteca");
+        }
+
+        usuario.getBibliotecasSeguidas().add(biblioteca);
+        // También se añade la relación inversa en la biblioteca por JPA
+
+        usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    public void dejarDeSeguirBiblioteca(Long usuarioId, Long bibliotecaId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Biblioteca biblioteca = bibliotecaRepository.findById(bibliotecaId)
+                .orElseThrow(() -> new RuntimeException("Biblioteca no encontrada"));
+
+        if (!usuario.getBibliotecasSeguidas().contains(biblioteca)) {
+            throw new RuntimeException("No estás siguiendo esta biblioteca");
+        }
+
+        usuario.getBibliotecasSeguidas().remove(biblioteca);
+
+        usuarioRepository.save(usuario);
     }
 }

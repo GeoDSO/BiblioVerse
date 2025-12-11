@@ -1,35 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import './explorador.css';
+import LectorLibro from './lectorlibro';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8081';
 
 function ExploradorLibros({ usuario }) {
   const [libros, setLibros] = useState([]);
   const [bibliotecas, setBibliotecas] = useState([]);
+  const [misBibliotecas, setMisBibliotecas] = useState([]);
   const [libroSeleccionado, setLibroSeleccionado] = useState(null);
-  const [mostrarModalInfo, setMostrarModalInfo] = useState(false);
-  const [mostrarModalAgregar, setMostrarModalAgregar] = useState(false);
-  const [bibliotecaSeleccionada, setBibliotecaSeleccionada] = useState('');
+  const [bibliotecaSeleccionada, setBibliotecaSeleccionada] = useState(null);
+  const [mostrarModalInfoLibro, setMostrarModalInfoLibro] = useState(false);
+  const [mostrarModalInfoBiblioteca, setMostrarModalInfoBiblioteca] = useState(false);
+  const [mostrarModalAgregarLibro, setMostrarModalAgregarLibro] = useState(false);
+  const [libroAbierto, setLibroAbierto] = useState(null);
+  const [bibliotecaDestino, setBibliotecaDestino] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [cargando, setCargando] = useState(false);
   const [busqueda, setBusqueda] = useState('');
+  const [filtroTipo, setFiltroTipo] = useState('todos');
 
   useEffect(() => {
     cargarLibros();
     cargarBibliotecas();
+    cargarMisBibliotecas();
   }, []);
 
   const cargarLibros = async () => {
     try {
       const response = await fetch(`${API_URL}/api/libros/listar`);
       const data = await response.json();
-
       const librosVisibles = data.filter(libro => {
         if (libro.esPublico) return true;
         if (libro.biblioteca) return libro.biblioteca.creador.id === usuario.id;
         return false;
       });
-
       setLibros(librosVisibles);
     } catch (error) {
       console.error('Error al cargar libros:', error);
@@ -37,42 +42,115 @@ function ExploradorLibros({ usuario }) {
   };
 
   const cargarBibliotecas = async () => {
-  try {
-    const response = await fetch(`${API_URL}/api/bibliotecas/listar`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    
-    if (Array.isArray(data)) {
-      // Bibliotecas propias
-      const misBibliotecas = data.filter(b => b.creador && b.creador.id === usuario.id);
-
-      // Bibliotecas públicas de otros usuarios
-      const publicas = data.filter(b => b.esPublica && b.creador && b.creador.id !== usuario.id);
-
-      // Unimos ambas listas
-      const todasBibliotecas = [...misBibliotecas, ...publicas];
-
-      setBibliotecas(todasBibliotecas);
-    } else {
-      console.error('❌ El backend no devolvió un array:', data);
+    try {
+      const response = await fetch(`${API_URL}/api/bibliotecas/listar`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        const bibliotecasPublicas = data.filter(b => b.esPublica);
+        setBibliotecas(bibliotecasPublicas);
+      }
+    } catch (error) {
+      console.error('Error al cargar bibliotecas:', error);
       setBibliotecas([]);
     }
-    
-  } catch (error) {
-    console.error('❌ Error al cargar bibliotecas:', error);
-    setBibliotecas([]);
-  }
-};
+  };
 
+  const cargarMisBibliotecas = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/bibliotecas/listar`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        const mias = data.filter(b => b.creador && b.creador.id === usuario.id);
+        setMisBibliotecas(mias);
+      }
+    } catch (error) {
+      console.error('Error al cargar mis bibliotecas:', error);
+      setMisBibliotecas([]);
+    }
+  };
 
   const librosFiltrados = libros.filter(libro =>
     libro.titulo.toLowerCase().includes(busqueda.toLowerCase()) ||
     libro.autor.toLowerCase().includes(busqueda.toLowerCase())
   );
+
+  const bibliotecasFiltradas = bibliotecas.filter(bib =>
+    bib.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+    (bib.descripcion && bib.descripcion.toLowerCase().includes(busqueda.toLowerCase())) ||
+    (bib.creador && bib.creador.username.toLowerCase().includes(busqueda.toLowerCase()))
+  );
+
+  const abrirModalInfoLibro = (libro) => {
+    setLibroSeleccionado(libro);
+    setMostrarModalInfoLibro(true);
+  };
+
+  const abrirModalInfoBiblioteca = (biblioteca) => {
+    setBibliotecaSeleccionada(biblioteca);
+    setMostrarModalInfoBiblioteca(true);
+  };
+
+  const abrirModalAgregarLibro = (libro) => {
+    setLibroSeleccionado(libro);
+    setMostrarModalAgregarLibro(true);
+    setBibliotecaDestino('');
+    setMensaje('');
+  };
+
+  const abrirLibro = (libro) => {
+    setLibroAbierto(libro);
+  };
+
+  const cerrarLibro = () => {
+    setLibroAbierto(null);
+  };
+
+  const cerrarModales = () => {
+    setMostrarModalInfoLibro(false);
+    setMostrarModalInfoBiblioteca(false);
+    setMostrarModalAgregarLibro(false);
+    setLibroSeleccionado(null);
+    setBibliotecaSeleccionada(null);
+    setMensaje('');
+    cargarLibros();
+  };
+
+  const agregarLibroABiblioteca = async () => {
+    if (!bibliotecaDestino) {
+      setMensaje('❌ Debes seleccionar una biblioteca');
+      return;
+    }
+
+    setCargando(true);
+    try {
+      const response = await fetch(
+        `${API_URL}/api/bibliotecas/${bibliotecaDestino}/agregar-libro/${libroSeleccionado.id}`,
+        { method: 'POST' }
+      );
+
+      if (response.ok) {
+        setMensaje('✅ ¡Libro agregado exitosamente!');
+        setTimeout(() => {
+          cerrarModales();
+          cargarMisBibliotecas();
+        }, 1500);
+      } else {
+        const error = await response.text();
+        setMensaje(`❌ ${error}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setMensaje('❌ Error al agregar el libro');
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const seguirBiblioteca = async (bibliotecaId) => {
+    alert('Funcionalidad de seguir biblioteca - Por implementar en el backend');
+  };
 
   const estaEnMiBiblioteca = (libro) => {
     if (!libro.esPublico && libro.biblioteca) {
@@ -81,11 +159,28 @@ function ExploradorLibros({ usuario }) {
     return false;
   };
 
+  const obtenerColorLibro = (id) => {
+    const colores = 8;
+    return `color-${(id % colores) + 1}`;
+  };
+
+  const elementosFiltrados = () => {
+    if (filtroTipo === 'libros') return librosFiltrados;
+    if (filtroTipo === 'bibliotecas') return bibliotecasFiltradas;
+    return [...librosFiltrados, ...bibliotecasFiltradas];
+  };
+
+  const totalResultados = () => {
+    if (filtroTipo === 'libros') return librosFiltrados.length;
+    if (filtroTipo === 'bibliotecas') return bibliotecasFiltradas.length;
+    return librosFiltrados.length + bibliotecasFiltradas.length;
+  };
+
   return (
     <div className="explorador-wrapper day">
       <header className="explorador-header">
-        <h1 className="titulo">📚 EXPLORADOR DE <span className="highlight">LIBROS</span></h1>
-        <p className="subtitulo">Descubre y agrega libros a tus bibliotecas</p>
+        <h1 className="titulo">📚 EXPLORADOR DE <span className="highlight">LIBROS Y BIBLIOTECAS</span></h1>
+        <p className="subtitulo">Descubre y agrega contenido a tus bibliotecas</p>
       </header>
 
       <div className="busqueda-container">
@@ -93,24 +188,44 @@ function ExploradorLibros({ usuario }) {
           <span className="search-icon">🔍</span>
           <input
             type="text"
-            placeholder="Buscar por título o autor..."
+            placeholder="Buscar por título, autor, nombre de biblioteca..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             className="input-busqueda"
           />
         </div>
+
+        <div className="filtros-container">
+          <button 
+            className={`btn-filtro ${filtroTipo === 'todos' ? 'activo' : ''}`}
+            onClick={() => setFiltroTipo('todos')}
+          >
+            📦 Todos
+          </button>
+          <button 
+            className={`btn-filtro ${filtroTipo === 'libros' ? 'activo' : ''}`}
+            onClick={() => setFiltroTipo('libros')}
+          >
+            📖 Solo Libros
+          </button>
+          <button 
+            className={`btn-filtro ${filtroTipo === 'bibliotecas' ? 'activo' : ''}`}
+            onClick={() => setFiltroTipo('bibliotecas')}
+          >
+            📚 Solo Bibliotecas
+          </button>
+        </div>
+
         <div className="resultados-info">
-          {librosFiltrados.length} libro{librosFiltrados.length !== 1 ? 's' : ''} encontrado{librosFiltrados.length !== 1 ? 's' : ''}
+          {totalResultados()} resultado{totalResultados() !== 1 ? 's' : ''} encontrado{totalResultados() !== 1 ? 's' : ''}
         </div>
       </div>
 
       <div className="grid">
-        {librosFiltrados.map(libro => (
-          <div 
-            key={libro.id} 
-            className="card"
-          >
-            <div className="portada-container">
+        {/* LIBROS */}
+        {(filtroTipo === 'todos' || filtroTipo === 'libros') && librosFiltrados.map(libro => (
+          <div key={`libro-${libro.id}`} className="card">
+            <div className="portada-container" onClick={() => abrirLibro(libro)} style={{ cursor: 'pointer' }}>
               {libro.rutaPortada ? (
                 <img src={`${API_URL}${libro.rutaPortada}`} alt={libro.titulo} className="portada" />
               ) : (
@@ -120,7 +235,16 @@ function ExploradorLibros({ usuario }) {
                 </div>
               )}
 
-              <button className="btn-info" onClick={() => abrirModalInfo(libro)} title="Ver información">ℹ️</button>
+              <button 
+                className="btn-info" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  abrirModalInfoLibro(libro);
+                }} 
+                title="Ver información"
+              >
+                ℹ️
+              </button>
               {libro.esPublico && <span className="badge-publico">🌍 Público</span>}
               {!libro.esPublico && libro.biblioteca && <span className="badge-privado">🔒 {libro.biblioteca.nombre}</span>}
             </div>
@@ -130,27 +254,94 @@ function ExploradorLibros({ usuario }) {
               <p className="autor-libro">👤 {libro.autor}</p>
               
               {libro.esPublico && (
-                <button className="btn-agregar" onClick={() => abrirModalAgregar(libro)}>➕ Agregar a biblioteca</button>
+                <button className="btn-agregar" onClick={() => abrirModalAgregarLibro(libro)}>
+                  ➕ Agregar a biblioteca
+                </button>
               )}
               {estaEnMiBiblioteca(libro) && (
-                <div className="libro-en-biblioteca">📚 En tu biblioteca</div>
+                <div className="libro-en-biblioteca">✓ En tu biblioteca</div>
               )}
+            </div>
+          </div>
+        ))}
+
+        {/* BIBLIOTECAS */}
+        {(filtroTipo === 'todos' || filtroTipo === 'bibliotecas') && bibliotecasFiltradas.map(biblioteca => (
+          <div 
+            key={`biblioteca-${biblioteca.id}`} 
+            className="card card-biblioteca"
+            onClick={() => abrirModalInfoBiblioteca(biblioteca)}
+          >
+            <div className="biblioteca-preview">
+              <div className="biblioteca-icono-grande">📚</div>
+              <div className="mini-estanteria-explorador">
+                {biblioteca.libros && biblioteca.libros.length > 0 ? (
+                  biblioteca.libros.slice(0, 4).map((libro) => (
+                    <div key={libro.id} className="libro-mini-wrapper">
+                      <img 
+                        src={`${API_URL}/api/libros/portada/${libro.id}`}
+                        alt={libro.titulo}
+                        className="mini-portada"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.classList.add('visible');
+                        }}
+                      />
+                      <div className={`libro-placeholder ${obtenerColorLibro(libro.id)}`}>
+                        📖
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <span className="sin-libros-mini">Sin libros</span>
+                )}
+              </div>
+            </div>
+
+            <div className="card-body">
+              <div className="biblioteca-header-card">
+                <span className="icono-biblioteca">🌍</span>
+                <h3 className="titulo-biblioteca">{biblioteca.nombre}</h3>
+              </div>
+              
+              <p className="creador-biblioteca">👤 {biblioteca.creador?.username}</p>
+              <p className="descripcion-biblioteca">
+                {biblioteca.descripcion || 'Sin descripción'}
+              </p>
+              
+              <div className="biblioteca-stats">
+                <span className="stat">📖 {biblioteca.libros?.length || 0} libros</span>
+              </div>
+
+              <button 
+                className="btn-seguir" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  seguirBiblioteca(biblioteca.id);
+                }}
+              >
+                ⭐ Seguir biblioteca
+              </button>
             </div>
           </div>
         ))}
       </div>
 
-      {librosFiltrados.length === 0 && (
+      {totalResultados() === 0 && (
         <div className="no-resultados">
-          <div className="icono-grande">📚</div>
+          <div className="icono-grande">
+            {filtroTipo === 'libros' ? '📖' : filtroTipo === 'bibliotecas' ? '📚' : '📦'}
+          </div>
           <p className="no-resultados-texto">
-            {busqueda ? 'No se encontraron libros con esa búsqueda' : 'No hay libros disponibles'}
+            {busqueda 
+              ? `No se encontraron ${filtroTipo === 'todos' ? 'resultados' : filtroTipo} con esa búsqueda` 
+              : `No hay ${filtroTipo === 'todos' ? 'contenido' : filtroTipo} disponible`}
           </p>
         </div>
       )}
 
-      {/* Modales */}
-      {mostrarModalInfo && libroSeleccionado && (
+      {/* MODAL INFO LIBRO */}
+      {mostrarModalInfoLibro && libroSeleccionado && (
         <div className="modal-overlay" onClick={cerrarModales}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <button className="btn-cerrar" onClick={cerrarModales}>✕</button>
@@ -168,14 +359,123 @@ function ExploradorLibros({ usuario }) {
               {!libroSeleccionado.esPublico && libroSeleccionado.biblioteca && (
                 <div className="info-item"><strong>📚 Biblioteca:</strong> {libroSeleccionado.biblioteca.nombre}</div>
               )}
-              {libroSeleccionado.rutaPdf && (
-                <a href={`${API_URL}${libroSeleccionado.rutaPdf}`} target="_blank" rel="noopener noreferrer" className="btn-leer">
-                  📄 Abrir PDF
-                </a>
-              )}
+              <button 
+                className="btn-leer"
+                onClick={() => {
+                  cerrarModales();
+                  abrirLibro(libroSeleccionado);
+                }}
+              >
+                📖 Leer libro
+              </button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* MODAL INFO BIBLIOTECA */}
+      {mostrarModalInfoBiblioteca && bibliotecaSeleccionada && (
+        <div className="modal-overlay" onClick={cerrarModales}>
+          <div className="modal modal-biblioteca" onClick={e => e.stopPropagation()}>
+            <button className="btn-cerrar" onClick={cerrarModales}>✕</button>
+            <div className="modal-header">
+              <h2 className="modal-titulo">
+                <span>📚</span> {bibliotecaSeleccionada.nombre}
+              </h2>
+              <span className="badge-modal-publico">🌍 Biblioteca Pública</span>
+            </div>
+            <div className="modal-body">
+              <div className="info-item"><strong>👤 Creador:</strong> {bibliotecaSeleccionada.creador?.username}</div>
+              <div className="info-item"><strong>📝 Descripción:</strong> {bibliotecaSeleccionada.descripcion || 'Sin descripción'}</div>
+              <div className="info-item"><strong>📖 Total de libros:</strong> {bibliotecaSeleccionada.libros?.length || 0}</div>
+              
+              {bibliotecaSeleccionada.libros && bibliotecaSeleccionada.libros.length > 0 && (
+                <div className="libros-preview">
+                  <h4>📚 Libros en esta biblioteca:</h4>
+                  <div className="lista-libros-modal">
+                    {bibliotecaSeleccionada.libros.map(libro => (
+                      <div 
+                        key={libro.id} 
+                        className="libro-item-modal"
+                        onClick={() => {
+                          cerrarModales();
+                          abrirLibro(libro);
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <span className="libro-icono">📖</span>
+                        <span className="libro-titulo-modal">{libro.titulo}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <button 
+                className="btn-seguir-modal" 
+                onClick={() => seguirBiblioteca(bibliotecaSeleccionada.id)}
+              >
+                ⭐ Seguir esta biblioteca
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL AGREGAR LIBRO A BIBLIOTECA */}
+      {mostrarModalAgregarLibro && libroSeleccionado && (
+        <div className="modal-overlay" onClick={cerrarModales}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <button className="btn-cerrar" onClick={cerrarModales}>✕</button>
+            <div className="modal-header">
+              <h2 className="modal-titulo">Agregar "{libroSeleccionado.titulo}"</h2>
+            </div>
+            <div className="modal-body">
+              {mensaje && (
+                <div className={mensaje.includes('✅') ? 'mensaje-exito' : 'mensaje-error'}>
+                  {mensaje}
+                </div>
+              )}
+
+              <div className="form-group">
+                <label>Selecciona una biblioteca:</label>
+                <select 
+                  value={bibliotecaDestino} 
+                  onChange={(e) => setBibliotecaDestino(e.target.value)}
+                  className="select-biblioteca"
+                >
+                  <option value="">-- Seleccionar --</option>
+                  {misBibliotecas.map(bib => (
+                    <option key={bib.id} value={bib.id}>
+                      {bib.esPublica ? '🌍' : '🔒'} {bib.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="modal-botones">
+                <button className="btn-modal btn-cancelar" onClick={cerrarModales}>
+                  Cancelar
+                </button>
+                <button 
+                  className="btn-modal btn-confirmar" 
+                  onClick={agregarLibroABiblioteca}
+                  disabled={cargando}
+                >
+                  {cargando ? 'Agregando...' : 'Agregar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* LECTOR DE PDF */}
+      {libroAbierto && (
+        <LectorLibro 
+          url={`${API_URL}/api/libros/pdf/${libroAbierto.id}`}
+          onClose={cerrarLibro}
+        />
       )}
     </div>
   );

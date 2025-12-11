@@ -38,4 +38,24 @@ public class Usuario {
     @OneToMany(mappedBy = "agregador", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Libro> librosAgregados = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_seguidores",
+            joinColumns = @JoinColumn(name = "seguidor_id"),
+            inverseJoinColumns = @JoinColumn(name = "seguido_id")
+    )
+    private Set<Usuario> seguidos = new HashSet<>();
+
+    // Relación inversa (quién me sigue a mí)
+    @ManyToMany(mappedBy = "seguidos")
+    private Set<Usuario> seguidores = new HashSet<>();
+
+    // Relación para seguir bibliotecas
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_biblioteca_seguida",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "biblioteca_id")
+    )
+    private Set<Biblioteca> bibliotecasSeguidas = new HashSet<>();
 }

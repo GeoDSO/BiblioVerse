@@ -46,5 +46,8 @@ public class Biblioteca {
     @OneToMany(mappedBy = "biblioteca", cascade = CascadeType.ALL)
     @JsonManagedReference("libro-biblioteca")
     private Set<Libro> libros = new HashSet<>();
+
+    @ManyToMany(mappedBy = "bibliotecasSeguidas")
+    private Set<Usuario> seguidores = new HashSet<>();
 }
 

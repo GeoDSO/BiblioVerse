@@ -15,6 +15,7 @@ function LectorLibro({ url, onClose }) {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageWidth, setPageWidth] = useState(400);
+  const [scale, setScale] = useState(1);
   const containerRef = useRef(null);
   const bookRef = useRef(null);
 
@@ -23,7 +24,7 @@ function LectorLibro({ url, onClose }) {
     const handleResize = () => {
       if (containerRef.current) {
         const availableWidth = containerRef.current.offsetWidth;
-        setPageWidth(Math.min(availableWidth / 2 - 50, 550)); // páginas más grandes
+        setPageWidth(Math.min(availableWidth / 2 - 50, 550));
       }
     };
     handleResize();
@@ -45,13 +46,15 @@ function LectorLibro({ url, onClose }) {
       x: xDir,
       duration: 0.2,
       ease: "power1.out",
+      scale: scale, // Mantener el scale actual
     });
-    tl.set(bookRef.current, { x: -xDir });
+    tl.set(bookRef.current, { x: -xDir, scale: scale });
     tl.to(bookRef.current, {
       opacity: 1,
       x: 0,
       duration: 0.25,
       ease: "power2.out",
+      scale: scale, // Mantener el scale actual
     });
   };
 
@@ -69,6 +72,18 @@ function LectorLibro({ url, onClose }) {
     }
   };
 
+  const zoomIn = () => {
+    setScale(prev => Math.min(prev + 0.2, 2.5));
+  };
+
+  const zoomOut = () => {
+    setScale(prev => Math.max(prev - 0.2, 0.6));
+  };
+
+  const resetZoom = () => {
+    setScale(1);
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
@@ -80,6 +95,39 @@ function LectorLibro({ url, onClose }) {
           ✖
         </button>
 
+        {/* Controles de zoom */}
+        <div className="zoom-controls">
+          <button 
+            className="zoom-btn" 
+            onClick={zoomOut}
+            disabled={scale <= 0.6}
+            title="Reducir zoom"
+          >
+            🔍-
+          </button>
+          
+          <span className="zoom-indicator">
+            {Math.round(scale * 100)}%
+          </span>
+          
+          <button 
+            className="zoom-btn" 
+            onClick={zoomIn}
+            disabled={scale >= 2.5}
+            title="Aumentar zoom"
+          >
+            🔍+
+          </button>
+          
+          <button 
+            className="zoom-btn reset-btn" 
+            onClick={resetZoom}
+            title="Restablecer zoom"
+          >
+            ↻
+          </button>
+        </div>
+
         <div className="pages-container">
           <Document
             file={url}
@@ -87,7 +135,11 @@ function LectorLibro({ url, onClose }) {
             onLoadError={(err) => alert("Error al cargar PDF: " + err.message)}
           >
             {numPages && (
-              <div ref={bookRef} className="book-pages">
+              <div 
+                ref={bookRef} 
+                className="book-pages"
+                style={{ transform: `scale(${scale})` }}
+              >
                 <Page
                   pageNumber={pageNumber}
                   width={pageWidth}

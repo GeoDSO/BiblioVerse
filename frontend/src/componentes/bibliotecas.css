@@ -473,7 +473,7 @@
   margin-bottom: 0.5rem;
   color: #7b5747;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.5rem;
 }
 
 .form-group input,
@@ -482,7 +482,7 @@
   padding: 0.8rem;
   border: 2px solid #d4bba8;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-family: inherit;
   transition: border-color 0.2s ease;
 }
@@ -532,12 +532,12 @@
 .opcion-visibilidad h3 {
   margin: 0.5rem 0;
   color: #7b5747;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
 }
 
 .opcion-visibilidad p {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: #a57865;
 }
 
@@ -549,10 +549,10 @@
 
 .btn-modal {
   flex: 1;
-  padding: 0.9rem;
+  padding: 1.5rem;
   border: none;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;

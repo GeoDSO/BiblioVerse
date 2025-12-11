@@ -36,5 +36,5 @@ public class Libro {
     @ManyToOne
     @JoinColumn(name = "biblioteca_id")
     @JsonBackReference("libro-biblioteca")
-    private Biblioteca biblioteca;  // NULL si es público
+    private Biblioteca biblioteca;
 }

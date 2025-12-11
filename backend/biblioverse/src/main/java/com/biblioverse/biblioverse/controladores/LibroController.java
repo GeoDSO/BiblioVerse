@@ -103,5 +103,16 @@ public class LibroController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<String> eliminarLibro(@PathVariable Long id) {
+        try {
+            libroService.eliminarLibro(id);
+            return ResponseEntity.ok("Libro y sus archivos asociados eliminados exitosamente.");
+        } catch (RuntimeException e) {
+            // Maneja el caso de que el libro no sea encontrado o haya un error al eliminar el archivo
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Ocurrió un error inesperado al eliminar el libro.");
+        }
+    }
 }

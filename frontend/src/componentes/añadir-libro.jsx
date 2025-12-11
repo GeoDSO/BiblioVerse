@@ -137,7 +137,9 @@ function AnadirLibro({ usuario }) {
 
       const response = await fetch(`${API_URL}/api/libros/subir`, {
         method: 'POST',
-        body: formData
+        body: datos,
+
+        
       });
 
       if (response.ok) {
@@ -149,6 +151,7 @@ function AnadirLibro({ usuario }) {
       } else {
         const errorData = await response.json().catch(() => ({}));
         setMensaje(`❌ Error: ${errorData.message || 'No se pudo agregar el libro'}`);
+        console.log('Datos enviados:', datos)
       }
     } catch (error) {
       console.error('Error:', error);
