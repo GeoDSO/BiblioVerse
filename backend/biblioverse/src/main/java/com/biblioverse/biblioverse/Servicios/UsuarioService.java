@@ -30,15 +30,17 @@ public class UsuarioService {
     private PasswordEncoder passwordEncoder;
 
     public Usuario registrarUsuario(Usuario usuario) {
+        // Encripta la contraseña antes de guardar
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         usuario.setRol(Rol.NORMAL);
         return usuarioRepository.save(usuario);
     }
 
     public Optional<Usuario> login(String email, String password) {
-        Optional<Usuario> user = usuarioRepository.findByEmail(email);
-        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            return user;
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+
+        if (usuario.isPresent() && passwordEncoder.matches(password, usuario.get().getPassword())) {
+            return usuario;
         }
         return Optional.empty();
     }
@@ -81,8 +83,6 @@ public class UsuarioService {
         }
 
         seguidor.getSeguidos().add(seguido);
-        // La relación bidireccional se gestiona automáticamente por JPA/Hibernate
-
         usuarioRepository.save(seguidor);
     }
 
@@ -99,7 +99,6 @@ public class UsuarioService {
         }
 
         seguidor.getSeguidos().remove(seguido);
-
         usuarioRepository.save(seguidor);
     }
 
@@ -116,8 +115,6 @@ public class UsuarioService {
         }
 
         usuario.getBibliotecasSeguidas().add(biblioteca);
-        // También se añade la relación inversa en la biblioteca por JPA
-
         usuarioRepository.save(usuario);
     }
 
@@ -134,7 +131,6 @@ public class UsuarioService {
         }
 
         usuario.getBibliotecasSeguidas().remove(biblioteca);
-
         usuarioRepository.save(usuario);
     }
 }
