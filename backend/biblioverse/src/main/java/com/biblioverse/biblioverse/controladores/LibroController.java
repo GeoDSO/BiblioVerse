@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/libros")
@@ -20,7 +22,7 @@ public class LibroController {
     private LibroService libroService;
 
     @PostMapping("/subir")
-    public ResponseEntity<Libro> subirLibro(
+    public ResponseEntity<?> subirLibro(
             @RequestParam("titulo") String titulo,
             @RequestParam("autor") String autor,
             @RequestParam(value = "descripcion", required = false) String descripcion,
@@ -30,93 +32,102 @@ public class LibroController {
             @RequestParam(value = "archivoPdf", required = false) MultipartFile archivoPdf,
             @RequestParam(value = "portada", required = false) MultipartFile portada) {
 
-        Libro libro = libroService.subirLibro(
-                titulo, autor, descripcion,
-                idUsuario, esPublico, idBiblioteca,
-                archivoPdf, portada
-        );
-
-        return ResponseEntity.ok(libro);
+        try {
+            Libro libro = libroService.subirLibro(
+                    titulo, autor, descripcion,
+                    idUsuario, esPublico, idBiblioteca,
+                    archivoPdf, portada
+            );
+            return ResponseEntity.ok(libro);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            error.put("tipo", "RuntimeException");
+            return ResponseEntity.badRequest().body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Error inesperado: " + e.getMessage());
+            error.put("tipo", e.getClass().getSimpleName());
+            return ResponseEntity.internalServerError().body(error);
+        }
     }
 
     @GetMapping("/listar")
-    public List<Libro> listarLibros() {
-        return libroService.listarLibros();
+    public ResponseEntity<?> listarLibros() {
+        try {
+            return ResponseEntity.ok(libroService.listarLibros());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Error al listar libros: " + e.getMessage());
+        }
     }
 
-    /**
-     * Endpoint específico para el explorador - solo libros públicos
-     */
     @GetMapping("/explorador")
-    public List<Libro> listarLibrosExplorador() {
-        return libroService.listarLibrosPublicos();
+    public ResponseEntity<?> listarLibrosExplorador() {
+        try {
+            return ResponseEntity.ok(libroService.listarLibrosPublicos());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Error al listar libros públicos: " + e.getMessage());
+        }
     }
 
-    /**
-     * Endpoint para listar libros visibles para un usuario específico
-     */
     @GetMapping("/visibles/{idUsuario}")
-    public List<Libro> listarLibrosVisibles(@PathVariable Long idUsuario) {
-        return libroService.listarLibrosVisiblesPara(idUsuario);
+    public ResponseEntity<?> listarLibrosVisibles(@PathVariable Long idUsuario) {
+        try {
+            return ResponseEntity.ok(libroService.listarLibrosVisiblesPara(idUsuario));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Error al listar libros visibles: " + e.getMessage());
+        }
     }
 
     @GetMapping("/buscar")
-    public List<Libro> buscarLibros(
+    public ResponseEntity<?> buscarLibros(
             @RequestParam(required = false) String titulo,
             @RequestParam(required = false) String autor) {
-        return libroService.buscarLibros(titulo, autor);
-    }
-
-    @GetMapping("/portada/{id}")
-    public ResponseEntity<byte[]> obtenerPortada(@PathVariable Long id) {
         try {
-            byte[] portada = libroService.obtenerPortada(id);
-
-            if (portada == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)
-                    .body(portada);
-
+            return ResponseEntity.ok(libroService.buscarLibros(titulo, autor));
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError()
+                    .body("Error al buscar libros: " + e.getMessage());
         }
     }
 
     @GetMapping("/mis-libros/{idUsuario}")
-    public List<Libro> obtenerLibrosDeUsuario(@PathVariable Long idUsuario) {
-        return libroService.listarLibrosDeUsuario(idUsuario);
-    }
-
-    @GetMapping("/pdf/{id}")
-    public ResponseEntity<byte[]> obtenerPDF(@PathVariable Long id) {
+    public ResponseEntity<?> obtenerLibrosDeUsuario(@PathVariable Long idUsuario) {
         try {
-            byte[] pdf = libroService.obtenerPDF(id);
-
-            if (pdf == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .body(pdf);
-
+            return ResponseEntity.ok(libroService.listarLibrosDeUsuario(idUsuario));
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError()
+                    .body("Error al obtener libros del usuario: " + e.getMessage());
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerLibro(@PathVariable Long id) {
+        try {
+            Libro libro = libroService.obtenerLibroPorId(id);
+            if (libro == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(libro);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Error al obtener el libro: " + e.getMessage());
+        }
+    }
+
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<String> eliminarLibro(@PathVariable Long id) {
         try {
             libroService.eliminarLibro(id);
-            return ResponseEntity.ok("Libro y sus archivos asociados eliminados exitosamente.");
+            return ResponseEntity.ok("Libro eliminado exitosamente.");
         } catch (RuntimeException e) {
-            // Maneja el caso de que el libro no sea encontrado o haya un error al eliminar el archivo
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Ocurrió un error inesperado al eliminar el libro.");
+            return ResponseEntity.internalServerError()
+                    .body("Error inesperado al eliminar el libro: " + e.getMessage());
         }
     }
 
@@ -129,7 +140,9 @@ public class LibroController {
             return ResponseEntity.ok("Libro eliminado correctamente");
         } catch (RuntimeException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Error inesperado: " + e.getMessage());
         }
     }
-
 }
