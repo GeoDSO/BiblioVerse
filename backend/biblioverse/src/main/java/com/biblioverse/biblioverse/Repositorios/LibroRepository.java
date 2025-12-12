@@ -31,4 +31,8 @@ public interface LibroRepository extends JpaRepository<Libro, Long> {
 
     @Query("SELECT l FROM Libro l WHERE LOWER(l.titulo) LIKE LOWER(CONCAT('%', :titulo, '%')) AND LOWER(l.agregador.username) LIKE LOWER(CONCAT('%', :username, '%'))")
     List<Libro> findByTituloContainingIgnoreCaseAndAgregadorUsernameContaining(@Param("titulo") String titulo, @Param("username") String username);
+
+    List<Libro> findByAgregadorId(Long idUsuario);
+
+
 }

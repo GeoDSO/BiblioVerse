@@ -371,7 +371,7 @@ function Bibliotecas({ usuario }) {
                         </button>
                         <div className="libro-grande-portada-wrapper">
                           <img 
-                            src={`${API_URL}/api/libros/portada/${libro.id}`}
+                            src={libro.rutaPortada}
                             alt={libro.titulo}
                             onError={(e) => handleImageError(e, libro.id)}
                           />

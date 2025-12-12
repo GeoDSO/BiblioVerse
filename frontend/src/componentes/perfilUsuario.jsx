@@ -10,6 +10,23 @@ const VISTA_TIPOS = {
     SEGUIDOS: 'Seguidos'
 };
 
+
+const [libros, setLibros] = useState([]);
+
+useEffect(() => {
+    cargarLibros();
+}, [usuario]);
+
+const cargarLibros = async () => {
+    try {
+        const response = await fetch(`${API_URL}/api/libros/mis-libros/${usuario.id}`);
+        const data = await response.json();
+        setLibros(data);
+    } catch (err) {
+        console.error("Error al cargar mis libros", err);
+    }
+};
+
 function PerfilPage({ usuario }) {
     const [bibliotecas, setBibliotecas] = useState([]);
     const [bibliotecasSeguidas, setBibliotecasSeguidas] = useState([]);
@@ -96,9 +113,9 @@ function PerfilPage({ usuario }) {
             case VISTA_TIPOS.MIS_LIBROS:
                 return {
                     tipo: VISTA_TIPOS.MIS_LIBROS,
-                    mensaje: "Funcionalidad de Mis Libros (requiere listar libros individualmente).",
-                    contenido: []
+                    contenido: libros.filter(l => l.agregador?.id === usuario.id)
                 };
+
             case VISTA_TIPOS.MIS_BIBLIOTECAS:
                 return {
                     tipo: VISTA_TIPOS.MIS_BIBLIOTECAS,
@@ -354,7 +371,7 @@ function PerfilPage({ usuario }) {
                                             biblioteca.libros.slice(0, 6).map((libro) => (
                                                 <div key={libro.id} className="libro-mini-wrapper">
                                                     <img 
-                                                        src={`${API_URL}/api/libros/portada/${libro.id}`}
+                                                        src={libro.rutaPortada}
                                                         alt={libro.titulo}
                                                         className="mini-portada"
                                                         onError={(e) => handleImageError(e, libro.id)}

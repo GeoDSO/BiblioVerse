@@ -325,7 +325,7 @@ function ExploradorLibros({ usuario }) {
           <div key={`libro-${libro.id}`} className="card">
             <div className="portada-container" onClick={() => abrirLibro(libro)} style={{ cursor: 'pointer' }}>
               {libro.rutaPortada ? (
-                <img src={`${API_URL}${libro.rutaPortada}`} alt={libro.titulo} className="portada" />
+              <img src={libro.rutaPortada} alt={libro.titulo} className="portada" />
               ) : (
                 <div className="portada-placeholder">
                   <div className="icono-libro">📖</div>

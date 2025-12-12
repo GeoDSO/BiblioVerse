@@ -85,6 +85,11 @@ public class LibroController {
         }
     }
 
+    @GetMapping("/mis-libros/{idUsuario}")
+    public List<Libro> obtenerLibrosDeUsuario(@PathVariable Long idUsuario) {
+        return libroService.listarLibrosDeUsuario(idUsuario);
+    }
+
     @GetMapping("/pdf/{id}")
     public ResponseEntity<byte[]> obtenerPDF(@PathVariable Long id) {
         try {

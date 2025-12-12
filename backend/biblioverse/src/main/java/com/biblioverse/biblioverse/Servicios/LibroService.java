@@ -28,7 +28,7 @@ public class LibroService {
     private BibliotecaRepository bibliotecaRepository;
 
     @Autowired
-    private CloudinaryService cloudinaryService;   // ✔️ Importante
+    private CloudinaryService cloudinaryService;
 
     // ======================================================
     // SUBIR LIBRO (PDF + PORTADA usando CLOUDINARY)
@@ -91,6 +91,10 @@ public class LibroService {
         return libroRepository.findAll().stream()
                 .filter(Libro::getEsPublico)
                 .collect(Collectors.toList());
+    }
+
+    public List<Libro> listarLibrosDeUsuario(Long idUsuario) {
+        return libroRepository.findByAgregadorId(idUsuario);
     }
 
     public List<Libro> listarLibrosVisiblesPara(Long idUsuario) {
