@@ -27,10 +27,12 @@ public class LibroController {
             @RequestParam("autor") String autor,
             @RequestParam(value = "descripcion", required = false) String descripcion,
             @RequestParam("idUsuario") Long idUsuario,
-            @RequestParam("esPublico") Boolean esPublico,
+            @RequestParam("esPublico") String esPublicoStr,
             @RequestParam(value = "idBiblioteca", required = false) Long idBiblioteca,
             @RequestParam(value = "archivoPdf", required = false) MultipartFile archivoPdf,
             @RequestParam(value = "portada", required = false) MultipartFile portada) {
+
+        Boolean esPublico = Boolean.parseBoolean(esPublicoStr);
 
         try {
             Libro libro = libroService.subirLibro(
