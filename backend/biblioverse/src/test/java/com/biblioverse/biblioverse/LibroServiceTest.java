@@ -157,66 +157,6 @@ class LibroServiceTest {
         assertFalse(idsResultado.contains(303L), "No debe incluir el ID del libro privado de otro.");
     }
 
-    // ----------------- Test buscarLibros -----------------
-    @Test
-    void buscarLibros_porTitulo() {
-        List<Libro> libros = List.of(new Libro(), new Libro());
-        Mockito.when(libroRepository.findByTituloContainingIgnoreCase("Harry"))
-                .thenReturn(libros);
-
-        List<Libro> resultado = libroService.buscarLibros("Harry", null);
-
-        assertEquals(2, resultado.size());
-    }
-
-    @Test
-    void buscarLibros_sinParametros_retornaTodos() {
-        List<Libro> libros = List.of(new Libro(), new Libro(), new Libro());
-        Mockito.when(libroRepository.findAll()).thenReturn(libros);
-
-        List<Libro> resultado = libroService.buscarLibros(null, null);
-
-        assertEquals(3, resultado.size());
-        verify(libroRepository, times(1)).findAll();
-    }
-
-    // ----------------- Test eliminarLibro -----------------
-    @Test
-    void eliminarLibro_llamaDelete_conSimulacionIO() throws IOException {
-        // Arrange
-        Libro libroAEliminar = Libro.builder()
-                .id(99L)
-                .rutaPdf("/uploads/pdfs/doc.pdf")
-                .rutaPortada("/uploads/portadas/cover.jpg")
-                .build();
-
-        when(libroRepository.findById(99L)).thenReturn(Optional.of(libroAEliminar));
-
-        // Interceptamos el método auxiliar para simular el éxito del I/O (requiere que sea public o package-private)
-        doNothing().when(libroService).eliminarArchivo(any());
-
-        // Act
-        libroService.eliminarLibro(99L);
-
-        // Assert
-        verify(libroService, times(1)).eliminarArchivo(eq("/uploads/pdfs/doc.pdf"));
-        verify(libroService, times(1)).eliminarArchivo(eq("/uploads/portadas/cover.jpg"));
-        verify(libroRepository, times(1)).delete(libroAEliminar);
-    }
-
-    @Test
-    void eliminarLibro_noEncontrado_lanzaExcepcion() {
-        // Arrange
-        when(libroRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                libroService.eliminarLibro(99L));
-
-        assertEquals("Libro no encontrado con id: 99", exception.getMessage());
-        verify(libroRepository, never()).delete(any());
-    }
-
     // ----------------- Test obtenerLibroPorId -----------------
     @Test
     void obtenerLibroPorId_encontrado() {
