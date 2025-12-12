@@ -16,12 +16,12 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)  // ← CAMBIADO
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Biblioteca {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include  // ← Solo usa el ID
+    @EqualsAndHashCode.Include
     private Long id;
 
     private String nombre;
@@ -31,7 +31,7 @@ public class Biblioteca {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    @JsonIgnoreProperties({"bibliotecasCreadas", "librosAgregados"})
+    @JsonIgnoreProperties({"bibliotecasCreadas", "librosAgregados", "seguidores", "seguidos", "bibliotecasSeguidas", "password"})
     private Usuario creador;
 
     @ManyToMany
@@ -47,7 +47,8 @@ public class Biblioteca {
     @JsonManagedReference("libro-biblioteca")
     private Set<Libro> libros = new HashSet<>();
 
+    // IMPORTANTE: NO pongas @JsonIgnore aquí, necesitamos los seguidores en el JSON
     @ManyToMany(mappedBy = "bibliotecasSeguidas")
+    @JsonIgnoreProperties({"bibliotecasCreadas", "librosAgregados", "seguidores", "seguidos", "bibliotecasSeguidas", "password"})
     private Set<Usuario> seguidores = new HashSet<>();
 }
-
