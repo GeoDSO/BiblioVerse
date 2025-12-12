@@ -396,7 +396,7 @@ function Bibliotecas({ usuario }) {
         {/* LECTOR DE PDF */}
         {libroAbierto && (
           <LectorLibro 
-            url={`${API_URL}/api/libros/pdf/${libroAbierto.id}`}
+          url={libroAbierto.rutaPdf}
             onClose={cerrarLibro}
           />
         )}
