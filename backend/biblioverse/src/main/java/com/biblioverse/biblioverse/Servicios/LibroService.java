@@ -147,4 +147,27 @@ public class LibroService {
         // Ya NO se eliminan archivos locales → Cloudinary mantiene su copia
         libroRepository.delete(libro);
     }
+
+
+    @Transactional
+    public void eliminarLibroDeUsuario(Long idLibro, Long idUsuario) {
+        Libro libro = libroRepository.findById(idLibro)
+                .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+
+        // Validar que el usuario sea el dueño
+        if (!libro.getAgregador().getId().equals(idUsuario)) {
+            throw new RuntimeException("No tienes permiso para eliminar este libro");
+        }
+
+        // Quitar el libro de la biblioteca si tiene una
+        if (libro.getBiblioteca() != null) {
+            Biblioteca b = libro.getBiblioteca();
+            b.getLibros().remove(libro);
+            bibliotecaRepository.save(b);
+        }
+
+        // Finalmente borrar de la BD
+        libroRepository.delete(libro);
+    }
+
 }

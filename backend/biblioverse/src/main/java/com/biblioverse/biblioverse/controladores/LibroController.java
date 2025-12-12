@@ -119,4 +119,17 @@ public class LibroController {
             return ResponseEntity.internalServerError().body("Ocurrió un error inesperado al eliminar el libro.");
         }
     }
+
+    @DeleteMapping("/eliminar/{idLibro}/usuario/{idUsuario}")
+    public ResponseEntity<?> eliminarLibroDeUsuario(
+            @PathVariable Long idLibro,
+            @PathVariable Long idUsuario) {
+        try {
+            libroService.eliminarLibroDeUsuario(idLibro, idUsuario);
+            return ResponseEntity.ok("Libro eliminado correctamente");
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
 }
