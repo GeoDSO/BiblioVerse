@@ -8,6 +8,7 @@ function ExploradorLibros({ usuario }) {
   const [libros, setLibros] = useState([]);
   const [bibliotecas, setBibliotecas] = useState([]);
   const [misBibliotecas, setMisBibliotecas] = useState([]);
+  const [bibliotecasSeguidas, setBibliotecasSeguidas] = useState([]);
   const [libroSeleccionado, setLibroSeleccionado] = useState(null);
   const [bibliotecaSeleccionada, setBibliotecaSeleccionada] = useState(null);
   const [mostrarModalInfoLibro, setMostrarModalInfoLibro] = useState(false);
@@ -24,6 +25,7 @@ function ExploradorLibros({ usuario }) {
     cargarLibros();
     cargarBibliotecas();
     cargarMisBibliotecas();
+    cargarBibliotecasSeguidas();
   }, []);
 
   const cargarLibros = async () => {
@@ -46,8 +48,18 @@ function ExploradorLibros({ usuario }) {
       const response = await fetch(`${API_URL}/api/bibliotecas/listar`);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
+      console.log('🔍 TODAS las bibliotecas recibidas del backend:', data);
+      
       if (Array.isArray(data)) {
-        const bibliotecasPublicas = data.filter(b => b.esPublica);
+        // Mostrar TODAS las bibliotecas públicas (excepto las propias)
+        const bibliotecasPublicas = data.filter(b => {
+          const esPublica = b.esPublica;
+          const noEsMia = b.creador && b.creador.id !== usuario.id;
+          console.log(`Biblioteca "${b.nombre}": Pública=${esPublica}, NoEsMia=${noEsMia}, Seguidores:`, b.seguidores);
+          return esPublica && noEsMia;
+        });
+        
+        console.log('📚 Bibliotecas filtradas para mostrar:', bibliotecasPublicas.map(b => b.nombre));
         setBibliotecas(bibliotecasPublicas);
       }
     } catch (error) {
@@ -68,6 +80,25 @@ function ExploradorLibros({ usuario }) {
     } catch (error) {
       console.error('Error al cargar mis bibliotecas:', error);
       setMisBibliotecas([]);
+    }
+  };
+
+  const cargarBibliotecasSeguidas = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/bibliotecas/listar`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      console.log('📚 Cargando bibliotecas seguidas...');
+      if (Array.isArray(data)) {
+        // Filtrar bibliotecas donde el usuario está en la lista de seguidores
+        const seguidas = data.filter(b => 
+          b.seguidores && b.seguidores.some(seg => seg.id === usuario.id)
+        );
+        console.log('✅ Bibliotecas que sigo:', seguidas.map(b => b.nombre));
+        setBibliotecasSeguidas(seguidas.map(b => b.id));
+      }
+    } catch (error) {
+      console.error('Error al cargar bibliotecas seguidas:', error);
     }
   };
 
@@ -148,8 +179,74 @@ function ExploradorLibros({ usuario }) {
     }
   };
 
-  const seguirBiblioteca = async (bibliotecaId) => {
-    alert('Funcionalidad de seguir biblioteca - Por implementar en el backend');
+  const seguirBiblioteca = async (bibliotecaId, e) => {
+    if (e) e.stopPropagation();
+    
+    const estaSiguiendo = bibliotecasSeguidas.includes(bibliotecaId);
+    console.log(`${estaSiguiendo ? 'Dejando de seguir' : 'Siguiendo'} biblioteca ${bibliotecaId}`);
+
+    try {
+      let response;
+      if (estaSiguiendo) {
+        // Dejar de seguir
+        response = await fetch(
+          `${API_URL}/api/usuarios/${usuario.id}/dejar-de-seguir-biblioteca/${bibliotecaId}`,
+          { method: 'DELETE' }
+        );
+      } else {
+        // Seguir
+        response = await fetch(
+          `${API_URL}/api/usuarios/${usuario.id}/seguir-biblioteca/${bibliotecaId}`,
+          { method: 'POST' }
+        );
+      }
+
+      const responseText = await response.text();
+      console.log('Respuesta del servidor:', responseText);
+
+      if (response.ok) {
+        // Actualizar el estado local INMEDIATAMENTE
+        if (estaSiguiendo) {
+          setBibliotecasSeguidas(prev => {
+            const nuevas = prev.filter(id => id !== bibliotecaId);
+            console.log('Estado actualizado - Ya no sigues:', nuevas);
+            return nuevas;
+          });
+          mostrarNotificacion('💔 Has dejado de seguir esta biblioteca');
+        } else {
+          setBibliotecasSeguidas(prev => {
+            const nuevas = [...prev, bibliotecaId];
+            console.log('Estado actualizado - Ahora sigues:', nuevas);
+            return nuevas;
+          });
+          mostrarNotificacion('⭐ ¡Ahora sigues esta biblioteca!');
+        }
+        
+        // Recargar después para sincronizar con el backend
+        setTimeout(() => {
+          cargarBibliotecas();
+          cargarBibliotecasSeguidas();
+        }, 500);
+      } else {
+        mostrarNotificacion(`❌ ${responseText}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      mostrarNotificacion('❌ Error de conexión');
+    }
+  };
+
+  const mostrarNotificacion = (texto) => {
+    setMensaje(texto);
+    setTimeout(() => setMensaje(''), 3000);
+  };
+
+  const estaSiguiendoBiblioteca = (bibliotecaId) => {
+    return bibliotecasSeguidas.includes(bibliotecaId);
+  };
+
+  const esCreadorDeBiblioteca = (biblioteca) => {
+    return biblioteca.creador && biblioteca.creador.id === usuario.id;
   };
 
   const estaEnMiBiblioteca = (libro) => {
@@ -164,12 +261,6 @@ function ExploradorLibros({ usuario }) {
     return `color-${(id % colores) + 1}`;
   };
 
-  const elementosFiltrados = () => {
-    if (filtroTipo === 'libros') return librosFiltrados;
-    if (filtroTipo === 'bibliotecas') return bibliotecasFiltradas;
-    return [...librosFiltrados, ...bibliotecasFiltradas];
-  };
-
   const totalResultados = () => {
     if (filtroTipo === 'libros') return librosFiltrados.length;
     if (filtroTipo === 'bibliotecas') return bibliotecasFiltradas.length;
@@ -182,6 +273,13 @@ function ExploradorLibros({ usuario }) {
         <h1 className="titulo">📚 EXPLORADOR DE <span className="highlight">LIBROS Y BIBLIOTECAS</span></h1>
         <p className="subtitulo">Descubre y agrega contenido a tus bibliotecas</p>
       </header>
+
+      {/* Notificación flotante */}
+      {mensaje && !mostrarModalAgregarLibro && (
+        <div className={`notificacion-flotante ${mensaje.includes('❌') ? 'error' : 'exito'}`}>
+          {mensaje}
+        </div>
+      )}
 
       <div className="busqueda-container">
         <div className="input-wrapper">
@@ -313,15 +411,14 @@ function ExploradorLibros({ usuario }) {
                 <span className="stat">📖 {biblioteca.libros?.length || 0} libros</span>
               </div>
 
-              <button 
-                className="btn-seguir" 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  seguirBiblioteca(biblioteca.id);
-                }}
-              >
-                ⭐ Seguir biblioteca
-              </button>
+              {!esCreadorDeBiblioteca(biblioteca) && (
+                <button 
+                  className={`btn-seguir ${estaSiguiendoBiblioteca(biblioteca.id) ? 'siguiendo' : ''}`}
+                  onClick={(e) => seguirBiblioteca(biblioteca.id, e)}
+                >
+                  {estaSiguiendoBiblioteca(biblioteca.id) ? '✓ Siguiendo' : '⭐ Seguir biblioteca'}
+                </button>
+              )}
             </div>
           </div>
         ))}
@@ -411,12 +508,14 @@ function ExploradorLibros({ usuario }) {
                 </div>
               )}
 
-              <button 
-                className="btn-seguir-modal" 
-                onClick={() => seguirBiblioteca(bibliotecaSeleccionada.id)}
-              >
-                ⭐ Seguir esta biblioteca
-              </button>
+              {!esCreadorDeBiblioteca(bibliotecaSeleccionada) && (
+                <button 
+                  className={`btn-seguir-modal ${estaSiguiendoBiblioteca(bibliotecaSeleccionada.id) ? 'siguiendo' : ''}`}
+                  onClick={(e) => seguirBiblioteca(bibliotecaSeleccionada.id, e)}
+                >
+                  {estaSiguiendoBiblioteca(bibliotecaSeleccionada.id) ? '✓ Siguiendo' : '⭐ Seguir esta biblioteca'}
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -86,27 +86,32 @@
     margin-bottom: 30px;
 }
 
-/* Acciones (Botón Nueva Biblioteca) */
-.perfil-acciones {
+/* Estadísticas */
+.perfil-stats {
     margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
 }
 
-.btn-nueva-biblioteca {
-    padding: 12px 25px;
-    background: linear-gradient(135deg, #7b5747, #a57865);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.3s ease;
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.stat-numero {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #7b5747;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #a4968c;
     text-transform: uppercase;
-}
-
-.btn-nueva-biblioteca:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(123, 87, 71, 0.4);
+    letter-spacing: 1px;
 }
 
 /* ===============================
@@ -151,7 +156,7 @@
 
 .bibliotecas-header {
     display: flex;
-    justify-content: flex-start; /* Alineado a la izquierda */
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
     padding: 0 0px 10px; 
@@ -161,6 +166,24 @@
     font-size: 2.5rem;
     font-weight: 800;
     color: #5d3f32;
+}
+
+.btn-nueva-biblioteca-header {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #7b5747, #a57865);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(123, 87, 71, 0.2);
+}
+
+.btn-nueva-biblioteca-header:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(123, 87, 71, 0.4);
 }
 
 /* Grid de bibliotecas */
@@ -206,11 +229,6 @@
     cursor: pointer;
     transition: all 0.3s ease;
 }
-
-/* Ocultar la tarjeta de crear en otras vistas (manejo en JSX) */
-/* .bibliotecas-container:not(.mis-bibliotecas-vista) .biblioteca-card-crear {
-    display: none;
-} */
 
 .icono-crear {
     font-size: 3rem;
@@ -306,6 +324,14 @@
     display: flex;
 }
 
+.sin-libros-mini {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #a57865;
+    font-size: 0.95rem;
+    padding: 1rem;
+}
+
 /* FOOTER de la tarjeta */
 .biblioteca-footer {
     display: flex;
@@ -346,7 +372,7 @@
     border: 1px dashed #d4bba8;
     color: #a57865;
     font-size: 1.5rem;
-    margin: 20px 2.5rem; /* Margen para centrar dentro del espacio de la sección */
+    margin: 20px 2.5rem;
 }
 
 /* --- VISTA EXPANDIDA (MODAL) --- */
@@ -400,6 +426,10 @@
     transition: all 0.2s ease;
 }
 
+.btn-cerrar:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 .biblioteca-expandida-body {
     padding: 2.5rem;
 }
@@ -429,6 +459,29 @@
     margin-top: 1.2rem;
 }
 
+.btn-eliminar:hover {
+    background: #a57865;
+    transform: translateY(-2px);
+}
+
+.btn-dejar-seguir {
+    background: #bb6a57;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 1.2rem;
+}
+
+.btn-dejar-seguir:hover {
+    background: #a57865;
+    transform: translateY(-2px);
+}
+
 /* ESTANTERÍA GRANDE */
 .estanteria-grande {
     display: grid;
@@ -449,6 +502,10 @@
     cursor: pointer;
 }
 
+.libro-grande:hover {
+    transform: translateY(-4px);
+}
+
 .libro-grande-portada-wrapper {
     width: 100%;
     height: 230px;
@@ -466,7 +523,6 @@
 }
 
 .libro-placeholder-grande {
-    /* Mismo estilo que img para fallback */
     width: 100%;
     height: 230px;
     border-radius: 8px;
@@ -491,6 +547,10 @@
     text-align: center;
     line-height: 1.4;
     transition: color 0.2s ease;
+}
+
+.libro-grande:hover .libro-grande-titulo {
+    color: #bb6a57;
 }
 
 .btn-eliminar-libro {
@@ -518,6 +578,18 @@
     opacity: 1;
 }
 
+.btn-eliminar-libro:hover {
+    background: rgba(165, 120, 101, 0.95);
+}
+
+.sin-libros-grande {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.4rem;
+    color: #a57865;
+}
+
 /* --- MODAL CREAR BIBLIOTECA --- */
 .modal-crear-biblioteca {
     position: fixed;
@@ -542,6 +614,12 @@
     padding: 2.5rem;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     animation: slideUp 0.3s ease;
+}
+
+.modal-crear-contenido h2 {
+    color: #7b5747;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
 }
 
 .form-group {
@@ -586,6 +664,16 @@
     text-align: center;
 }
 
+.opcion-visibilidad:hover {
+    border-color: #bb6a57;
+    background: rgba(187, 106, 87, 0.05);
+}
+
+.icono-opcion {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
 .opcion-visibilidad h3 {
     margin: 0.5rem 0 0.2rem;
     color: #7b5747;
@@ -617,12 +705,31 @@
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
 }
 
-.btn-cancelar { background: #e8ddd3; color: #7b5747; }
-.btn-crear { background: #bb6a57; color: white; }
-.btn-crear:disabled { background: #d4bba8; cursor: not-allowed; }
+.btn-cancelar { 
+    background: #e8ddd3; 
+    color: #7b5747; 
+}
+
+.btn-cancelar:hover {
+    background: #d4bba8;
+}
+
+.btn-crear { 
+    background: #bb6a57; 
+    color: white; 
+}
+
+.btn-crear:hover {
+    background: #a57865;
+}
+
+.btn-crear:disabled { 
+    background: #d4bba8; 
+    cursor: not-allowed; 
+}
 
 /* Mensajes de feedback */
 .mensaje-error { 
@@ -633,6 +740,7 @@
     margin-bottom: 1rem;
     border: 1px solid #c62828;
 }
+
 .mensaje-exito { 
     background: #e8f5e9; 
     color: #2e7d32; 
@@ -641,7 +749,6 @@
     margin-bottom: 1rem;
     border: 1px solid #2e7d32;
 }
-
 
 /* --- PLACEHOLDER COLORS (Para libros sin portada) --- */
 .libro-placeholder.color-1, .libro-placeholder-grande.color-1 { background: linear-gradient(135deg, #ffd6d6 0%, #ffb8b8 100%); }
@@ -654,41 +761,68 @@
 .libro-placeholder.color-8, .libro-placeholder-grande.color-8 { background: linear-gradient(135deg, #f5e6d6 0%, #e6d4b8 100%); }
 
 /* --- ANIMACIONES --- */
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { 
+    from { opacity: 0; } 
+    to { opacity: 1; } 
+}
+
+@keyframes slideUp { 
+    from { opacity: 0; transform: translateY(30px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
 
 /* --- RESPONSIVE --- */
 @media (max-width: 800px) {
     .perfil-wrapper {
         padding: 20px;
     }
+    
     .titulo {
         font-size: 2.5rem;
     }
+    
     .perfil-card {
         padding: 30px 15px;
     }
+    
+    .perfil-stats {
+        gap: 2rem;
+    }
+    
     .perfil-filtro-nav {
         flex-wrap: wrap;
         gap: 10px;
     }
+    
     .filtro-btn {
         font-size: 1rem;
         padding: 8px 15px;
     }
+    
     .bibliotecas-container {
         grid-template-columns: 1fr;
         padding: 1.5rem;
     }
+    
     .bibliotecas-header {
         flex-direction: column;
         gap: 15px;
         padding: 0;
     }
+    
     .bibliotecas-titulo {
         font-size: 2rem;
     }
+    
+    .btn-nueva-biblioteca-header {
+        width: 100%;
+    }
+    
     .modal-crear-contenido, .biblioteca-expandida-contenido {
         padding: 1.5rem;
+    }
+    
+    .estanteria-grande {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
 }
