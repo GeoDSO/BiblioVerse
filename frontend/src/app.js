@@ -65,8 +65,8 @@ function App() {
 
       const data = await response.json();
 
-      console.log("📥 Respuesta del login:", data);  // ← AÑADE ESTO
-      console.log("👤 Usuario guardado:", data.usuario);  // ← AÑADE ESTO
+      console.log("📥 Respuesta del login:", data);  
+      console.log("👤 Usuario guardado:", data.usuario);  
 
       if (response.ok) {
         // Guardamos usuario y pasamos a la pantalla HOME
@@ -133,7 +133,7 @@ function App() {
         )}
 
         {/* Pantalla HOME */}
-        {vistaActual === 'home' && usuario && (
+        {vistaActual === 'home' && (
           <HomePage usuario={usuario} />
         )}
 

@@ -9,26 +9,27 @@ function Nav({ usuario, onLogout, onNavigate }) {
         </div>
 
         <ul className="nav-menu">
-          {usuario ? (
-            <>
-              <li onClick={() => onNavigate('home')}>Inicio</li>
-              <li onClick={() => onNavigate('explorador')}>Explorar</li>
-              <li onClick={() => onNavigate('añadir-libro')}>Añadir Libros</li>
-              <li onClick={() => onNavigate('perfilpage')}>Perfil</li>
-              <li className="nav-user">
-                <span>👤 {usuario.username}</span>
-                <button onClick={onLogout} className="btn-logout">
-                  Cerrar Sesión
-                </button>
-              </li>
-            </>
-          ) : (
-            <>
-              <li onClick={() => onNavigate('login')}>Iniciar Sesión</li>
-              <li onClick={() => onNavigate('register')}>Registrarse</li>
-            </>
-          )}
-        </ul>
+        <li onClick={() => onNavigate('home')}>Inicio</li>
+        
+        {usuario ? (
+          <>
+            <li onClick={() => onNavigate('explorador')}>Explorar</li>
+            <li onClick={() => onNavigate('añadir-libro')}>Añadir Libros</li>
+            <li onClick={() => onNavigate('perfilpage')}>Perfil</li>
+            <li className="nav-user">
+              <span>👤 {usuario.username}</span>
+              <button onClick={onLogout} className="btn-logout">
+                Cerrar Sesión
+              </button>
+            </li>
+          </>
+        ) : (
+          <>
+            <li onClick={() => onNavigate('login')}>Iniciar Sesión</li>
+            <li onClick={() => onNavigate('register')}>Registrarse</li>
+          </>
+        )}
+      </ul>
       </div>
     </nav>
   );

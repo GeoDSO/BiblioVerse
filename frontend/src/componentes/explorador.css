@@ -91,7 +91,7 @@
   padding: 1rem 1rem 1rem 3.5rem;
   border: 2px solid rgba(165, 120, 101, 0.2);
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 2rem;
   background: #fffdf9;
   color: #7b5747;
   transition: all 0.3s ease;
@@ -121,7 +121,7 @@
   color: #7b5747;
   border: 2px solid rgba(165, 120, 101, 0.2);
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
