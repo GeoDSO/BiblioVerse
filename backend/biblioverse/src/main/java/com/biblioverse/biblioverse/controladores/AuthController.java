@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@CrossOrigin(origins = "https://biblio-verse.vercel.app") // <-- ¡Añade esto!
+@CrossOrigin(origins = "https://biblioversefront.onrender.com")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

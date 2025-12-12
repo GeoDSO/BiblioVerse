@@ -15,7 +15,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "http://localhost:3000",
-                                "https://biblio-verse-x3w5.vercel.app"
+                                "https://biblioversefront.onrender.com"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
