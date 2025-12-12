@@ -140,7 +140,8 @@ function PerfilPage({ usuario }) {
         if (!window.confirm('¿Seguro que quieres eliminar este libro? Esta acción no se puede deshacer.')) return;
 
         try {
-            const response = await fetch(`${API_URL}/api/libros/eliminar/${libroId}/por-usuario/${usuario.id}`, {
+            const response = await fetch(`${API_URL}/api/libros/eliminar/${libroId}/usuario/${usuario.id}`, {
+
                 method: 'DELETE'
             });
 
