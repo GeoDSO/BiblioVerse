@@ -11,10 +11,22 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "gsap": "^3.13.0",
-    "pdfjs-dist": "^3.11.174",
+    "pdfjs-dist": "^4.0.379",
     "react-flip-toolkit": "^7.2.4",
     "react-pageflip": "^2.0.3",
     "react-pdf": "^7.7.3",
     "react-reader": "^2.0.15"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
