@@ -223,7 +223,7 @@ function Bibliotecas({ usuario }) {
                   biblioteca.libros.slice(0, 6).map((libro) => (
                     <div key={libro.id} className="libro-mini-wrapper">
                       <img 
-                        src={`${API_URL}/api/libros/portada/${libro.id}`}
+                        src={libro.rutaPortada} 
                         alt={libro.titulo}
                         className="mini-portada"
                         onError={(e) => handleImageError(e, libro.id)}

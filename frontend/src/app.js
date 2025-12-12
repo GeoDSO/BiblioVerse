@@ -133,7 +133,7 @@ function App() {
         )}
 
         {/* Pantalla HOME */}
-        {vistaActual === 'home' && (
+        {vistaActual === 'home' && usuario && (
           <HomePage usuario={usuario} />
         )}
 
