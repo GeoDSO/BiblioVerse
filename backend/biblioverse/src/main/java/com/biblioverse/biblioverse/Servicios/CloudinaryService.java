@@ -16,7 +16,23 @@ public class CloudinaryService {
     private Cloudinary cloudinary;
 
     public String subirArchivo(MultipartFile archivo) throws IOException {
-        Map resultado = cloudinary.uploader().upload(archivo.getBytes(), ObjectUtils.emptyMap());
+
+        if (archivo == null) {
+            throw new IllegalArgumentException("Archivo recibido es null");
+        }
+
+        if (archivo.isEmpty()) {
+            throw new IllegalArgumentException("Archivo está vacío");
+        }
+
+        Map resultado = cloudinary.uploader().upload(
+                archivo.getBytes(),
+                ObjectUtils.asMap(
+                        "resource_type", "auto"  // permite PDF, imágenes, etc.
+                )
+        );
+
         return resultado.get("secure_url").toString();
     }
 }
+

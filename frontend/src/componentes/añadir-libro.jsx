@@ -124,8 +124,8 @@ function AnadirLibro({ usuario }) {
       datos.append('titulo', formData.titulo);
       datos.append('autor', formData.autor);
       datos.append('descripcion', formData.descripcion);
-      datos.append('idUsuario', usuario.id);
-      datos.append('esPublico', formData.esPublico);
+datos.append('idUsuario', String(usuario.id));
+datos.append('esPublico', formData.esPublico ? "true" : "false");
       
       // Solo enviar idBiblioteca si es privado
       if (!formData.esPublico) {
