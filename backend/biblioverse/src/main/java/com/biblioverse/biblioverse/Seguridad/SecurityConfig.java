@@ -44,6 +44,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(Arrays.asList(
+                    "https://vivlioverse.vercel.app/",
                 "https://biblioversefront.onrender.com",  //  Frontend en producción
                 "http://localhost:3000",                   // Frontend local (React/Vite)
                 "http://localhost:5173",                   // Frontend local (Vite alternativo)
