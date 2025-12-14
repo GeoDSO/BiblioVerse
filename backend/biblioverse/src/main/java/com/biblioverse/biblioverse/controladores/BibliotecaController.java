@@ -20,7 +20,7 @@ public class BibliotecaController {
     public Biblioteca crearBiblioteca(@RequestBody BibliotecaDto bibliotecaDTO) {
         return bibliotecaService.crearBiblioteca(
                 bibliotecaDTO.getNombre(),
-                bibliotecaDTO.getDescripcion(),  // ← AÑADE ESTO
+                bibliotecaDTO.getDescripcion(),
                 bibliotecaDTO.getEsPublica(),
                 bibliotecaDTO.getIdUsuario()
         );

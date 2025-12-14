@@ -107,7 +107,6 @@
     <build>
         <plugins>
 
-            <!-- 🛠️ COMPILADOR MAVEN con Lombok habilitado -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -116,7 +115,6 @@
                     <source>21</source>
                     <target>21</target>
                     <annotationProcessorPaths>
-                        <!-- Habilita LOMBOK como procesador -->
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
@@ -126,7 +124,6 @@
                 </configuration>
             </plugin>
 
-            <!-- 🚀 Plugin de Spring Boot para empaquetar JAR ejecutable -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

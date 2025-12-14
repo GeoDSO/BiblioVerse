@@ -26,10 +26,12 @@ public class CloudinaryService {
 
         Map resultado = cloudinary.uploader().upload(
                 archivo.getBytes(),
-                ObjectUtils.asMap("resource_type", "auto")
+                ObjectUtils.asMap(
+                        "resource_type", "raw",
+                        "access_mode", "public"
+                )
         );
 
         return resultado.get("secure_url").toString();
     }
 }
-

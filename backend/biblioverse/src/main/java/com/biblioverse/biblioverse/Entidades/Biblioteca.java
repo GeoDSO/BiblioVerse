@@ -47,7 +47,6 @@ public class Biblioteca {
     @JsonManagedReference("libro-biblioteca")
     private Set<Libro> libros = new HashSet<>();
 
-    // IMPORTANTE: NO pongas @JsonIgnore aquí, necesitamos los seguidores en el JSON
     @ManyToMany(mappedBy = "bibliotecasSeguidas")
     @JsonIgnoreProperties({"bibliotecasCreadas", "librosAgregados", "seguidores", "seguidos", "bibliotecasSeguidas", "password"})
     private Set<Usuario> seguidores = new HashSet<>();
