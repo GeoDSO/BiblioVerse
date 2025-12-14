@@ -45,6 +45,8 @@ public class SecurityConfig {
 
         config.setAllowedOrigins(Arrays.asList(
                     "https://vivlioverse.vercel.app/",
+                    "https://biblio-verse-h67ctfgne-geos-projects-951a0866.vercel.app/",
+                    "https://biblio-verse-git-deploy-geos-projects-951a0866.vercel.app/",
                 "https://biblioversefront.onrender.com",  //  Frontend en producción
                 "http://localhost:3000",                   // Frontend local (React/Vite)
                 "http://localhost:5173",                   // Frontend local (Vite alternativo)
