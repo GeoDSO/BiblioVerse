@@ -1,6 +1,6 @@
-# BiblioVerse – Trabajo de Fin de Grado (TFG)
+# BiblioVerse – Trabajo de Fin de Ciclo (TFC)
 
-BiblioVerse es una aplicación web **fullstack** desarrollada como **Trabajo de Fin de Grado**, cuyo objetivo es ofrecer una plataforma para la **gestión, organización y compartición de libros digitales en formato PDF**, permitiendo diferenciar entre contenidos públicos y privados.
+BiblioVerse es una aplicación web **fullstack** desarrollada como **Trabajo de Fin de Ciclo**, cuyo objetivo es ofrecer una plataforma para la **gestión, organización y compartición de libros digitales en formato PDF**, permitiendo diferenciar entre contenidos públicos y privados.
 
 El proyecto aborda el desarrollo completo de una aplicación moderna, incluyendo **frontend, backend, seguridad, persistencia de datos y despliegue en la nube**.
 ---
