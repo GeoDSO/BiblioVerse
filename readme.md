@@ -2,8 +2,7 @@
 
 BiblioVerse es una aplicación web **fullstack** desarrollada como **Trabajo de Fin de Grado**, cuyo objetivo es ofrecer una plataforma para la **gestión, organización y compartición de libros digitales en formato PDF**, permitiendo diferenciar entre contenidos públicos y privados.
 
-El proyecto aborda el desarrollo completo de una aplicación moderna, incluyendo **frontend, backend, seguridad, persistencia de datos y despliegue en la nube**, aplicando buenas prácticas de ingeniería del software.
-
+El proyecto aborda el desarrollo completo de una aplicación moderna, incluyendo **frontend, backend, seguridad, persistencia de datos y despliegue en la nube**.
 ---
 
 ## Objetivo del proyecto
@@ -42,11 +41,10 @@ El objetivo principal de BiblioVerse es:
 - **Spring Data JPA / Hibernate**
 - **PostgreSQL**
 - **Cloudinary**
-- **Maven**
 
 ### Frontend
 - **React**
-- **JavaScript (ES6+)**
+- **JavaScript**
 - **Fetch API**
 - **CSS personalizado**
 
@@ -54,6 +52,7 @@ El objetivo principal de BiblioVerse es:
 - **Docker** (Dockerfile para el backend)
 - **Render** (despliegue del backend y base de datos)
 - **Cloudinary** (almacenamiento de PDFs e imágenes)
+- **Vercel** (despliegue de frontend)
 
 ---
 
