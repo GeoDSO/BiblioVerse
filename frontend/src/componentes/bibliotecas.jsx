@@ -384,7 +384,7 @@ function Bibliotecas({ usuario }) {
                     ))
                   ) : (
                     <div className="sin-libros-grande">
-                      📚 Esta biblioteca aún no tiene libros
+                       Esta biblioteca aún no tiene libros
                     </div>
                   )}
                 </div>
