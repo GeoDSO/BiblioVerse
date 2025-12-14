@@ -2,9 +2,14 @@
   "name": "biblioverse-frontend",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -15,7 +20,13 @@
     "react-flip-toolkit": "^7.2.4",
     "react-pageflip": "^2.0.3",
     "react-pdf": "^7.7.3",
-    "react-reader": "^2.0.15"
+    "react-reader": "^2.0.15",
+    "web-vitals": "^2.1.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
   },
   "browserslist": {
     "production": [
