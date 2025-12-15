@@ -67,6 +67,8 @@ El backend de la aplicación incluye un **Dockerfile**, utilizado para facilitar
 
 Este enfoque permite separar responsabilidades y simplificar la infraestructura del proyecto.
 
+**El proyecto desplegable se encuentra en la rama deploy**
+
 ---
 
 ## Configuración mediante variables de entorno
